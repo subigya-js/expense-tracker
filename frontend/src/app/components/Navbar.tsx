@@ -1,11 +1,52 @@
-import { FaRegUserCircle } from "react-icons/fa";
+import Link from 'next/link'
+import { FaRegUserCircle } from "react-icons/fa"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const Navbar = () => {
     return (
-        <div className="flex justify-between items-center py-6 px-8 min-h-[10vh] bg-gray-300 text-gray-700">
-            <p className="font-semibold">Expense Tracker</p>
-            <button><FaRegUserCircle size={24}/></button>
-        </div>
+        <nav className="bg-white border-b border-gray-200 py-4 px-6 md:px-8 shadow-sm">
+            <div className="max-w-7xl mx-auto flex justify-between items-center">
+                <div className="flex items-center space-x-8">
+                    <Link href="/" className="text-xl font-bold text-gray-800">
+                        Expense Tracker
+                    </Link>
+                    <div className="hidden md:flex space-x-4">
+                        <Link href="/dashboard" className="text-gray-600 hover:text-gray-800">
+                            Dashboard
+                        </Link>
+                        <Link href="/transactions" className="text-gray-600 hover:text-gray-800">
+                            Transactions
+                        </Link>
+                        <Link href="/reports" className="text-gray-600 hover:text-gray-800">
+                            Reports
+                        </Link>
+                    </div>
+                </div>
+                <div className="flex items-center space-x-4">
+                    <Button variant="outline" className="hidden md:inline-flex">
+                        Add Expense
+                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <FaRegUserCircle size={24} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem>Profile</DropdownMenuItem>
+                            <DropdownMenuItem>Settings</DropdownMenuItem>
+                            <DropdownMenuItem>Logout</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </div>
+        </nav>
     )
 }
 
