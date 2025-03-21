@@ -1,25 +1,72 @@
-const asyncHandler = require('express-async-handler');
-const User = require('../models/userModel');
+const asyncHandler = require("express-async-handler");
+const User = require("../models/userModel");
+const bcrypt = require("bcryptjs");
 
 // @desc Register a new user
 // @route POST /api/auth/register
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-    res.status(201).json({message: 'Register route'});
-})
+  const { name, email, password } = req.body;
+
+  if (!name || !email || !password) {
+    res.status(400);
+    throw new Error("Please fill in all fields");
+  }
+
+  const userAvailable = await User.findOne({ email });
+  if (userAvailable) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
+
+  if (user) {
+    res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid user data");
+  }
+});
 
 // @desc Login user
 // @route POST /api/auth/login
 // @access Public
 const loginUser = asyncHandler(async (req, res) => {
-    res.status(201).json({message: 'Login route'});
-})
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("Please fill in all fields");
+  }
+
+  const user = await User.findOne({ email });
+  if (user && (await bcrypt.compare(password, user.password))) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
+  } else {
+    res.status(400);
+    throw new Error("Invalid email or password");
+  }
+});
 
 // @desc Get current user
 // @route GET /api/auth/current
 // @access Private
 const currentUser = asyncHandler(async (req, res) => {
-    res.status(200).json({message: 'Current user route'});
-})
+  res.status(200).json({ message: "Current user route" });
+});
 
 module.exports = { registerUser, loginUser, currentUser };
