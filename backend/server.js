@@ -1,13 +1,14 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const connectDB  = require("./config/connectDB");
+const connectDB = require("./config/connectDB");
 const { errorHandler } = require("./middleware/errorHandler");
+const { validateToken } = require("./middleware/validateTokenHandler");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-connectDB()
+connectDB();
 app.use(cors()); // Allow cross-origin requests
 app.use(express.json()); // Parse incoming JSON requests
 
