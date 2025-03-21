@@ -66,7 +66,7 @@ const loginUser = asyncHandler(async (req, res) => {
         expiresIn: "30d",
       }
     );
-    res.status(200).json({accessToken});
+    res.status(200).json({ accessToken });
   } else {
     res.status(400);
     throw new Error("Invalid email or password");
@@ -77,7 +77,7 @@ const loginUser = asyncHandler(async (req, res) => {
 // @route GET /api/auth/current
 // @access private
 const currentUser = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: "Current user route" });
+  res.status(200).json(req.user);
 });
 
 module.exports = { registerUser, loginUser, currentUser };
