@@ -3,6 +3,8 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface LoginData {
   email: string;
@@ -10,15 +12,19 @@ interface LoginData {
 }
 
 const LoginPage = () => {
+  const router = useRouter();
   const [loginData, setLoginData] = React.useState<LoginData>({
     email: "",
     password: "",
   });
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
+  const [showPassword, setShowPassword] = React.useState<boolean>(false);
 
   const loginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
 
     try {
       const response = await fetch("http://localhost:3001/api/auth/login", {
@@ -28,19 +34,22 @@ const LoginPage = () => {
         },
         body: JSON.stringify(loginData),
       });
-    
+
       const data = await response.json();
 
       if (response.ok) {
-        setLoading(true);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("token", data.token);
+        router.push("/dashboard");
         setLoginData({ email: "", password: "" });
       } else {
         setError(data.message || "Login failed");
       }
-
     } catch (error) {
       console.error(error);
       setError("An unknown error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,19 +88,32 @@ const LoginPage = () => {
           >
             Password
           </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
-                       focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-            placeholder="Enter your password"
-            value={loginData.password}
-            onChange={(e) =>
-              setLoginData({ ...loginData, password: e.target.value })
-            }
-            required
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                         focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 pr-10"
+              placeholder="Enter your password"
+              value={loginData.password}
+              onChange={(e) =>
+                setLoginData({ ...loginData, password: e.target.value })
+              }
+              required
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5 cursor-pointer text-gray-500" />
+              ) : (
+                <Eye className="h-5 w-5 cursor-pointer text-gray-500" />
+              )}
+            </button>
+          </div>
         </div>
 
         {error && <div className="text-red-500">{error}</div>}

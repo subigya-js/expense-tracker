@@ -7,7 +7,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import Logo from "../../assets/logo.png"
+import Logo from "../../../assets/logo.png"
 import Image from 'next/image'
 
 const Navbar = () => {
