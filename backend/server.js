@@ -13,6 +13,7 @@ app.use(cors()); // Allow cross-origin requests
 app.use(express.json()); // Parse incoming JSON requests
 
 app.use("/api/auth", require("./routes/userRoutes"));
+app.use("/api/expense", validateToken, require("./routes/addExpenseRoute"));
 
 // Error Handler Middleware
 app.use(errorHandler);
