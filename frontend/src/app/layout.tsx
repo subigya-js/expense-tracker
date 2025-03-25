@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "./components/common/Navbar";
+import AddExpense from "./components/modals/AddExpense";
+import { ModalProvider } from "../../context/ModalContext";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,8 +30,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar />
-        {children}
+        <ModalProvider> {/* Wrap the app with ModalProvider */}
+          <Navbar />
+          {children}
+
+          <AddExpense /> {/* Place the modal component at the root level */}
+        </ModalProvider>
       </body>
     </html>
   );

@@ -1,9 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { FaRegUserCircle } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,12 +7,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import Logo from "../../../assets/logo.png";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FaRegUserCircle } from "react-icons/fa";
+import { useModal } from "../../../../context/ModalContext";
+import Logo from "../../../assets/logo.png";
 
 const Navbar = () => {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Modal state
+  const {openModal} = useModal();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -69,7 +73,7 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {isLoggedIn && (
             <>
-              <Button variant="outline" className="hidden md:inline-flex">
+              <Button variant="outline" className="hidden md:inline-flex" onClick={openModal}>
                 Add Expense
               </Button>
               <DropdownMenu>
