@@ -176,7 +176,7 @@ const AddExpense = () => {
             />
           </div>
           <p>{error && error}</p>
-          <Button type="submit" className="w-[50%] mx-auto">
+          <Button type="submit">
             {isLoading ? "Adding Expense..." : "Add Expense"}
           </Button>
         </form>

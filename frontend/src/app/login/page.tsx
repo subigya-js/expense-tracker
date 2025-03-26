@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "../../../context/AuthContext";
 
 interface LoginData {
   email: string;
@@ -13,6 +14,7 @@ interface LoginData {
 
 const LoginPage = () => {
   const router = useRouter();
+  const { login } = useAuth();
   const [loginData, setLoginData] = React.useState<LoginData>({
     email: "",
     password: "",
@@ -38,8 +40,8 @@ const LoginPage = () => {
       const data = await response.json();
 
       if (response.ok) {
+        login(data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("token", data.token);
         router.push("/dashboard");
         setLoginData({ email: "", password: "" });
       } else {

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "./components/common/Navbar";
 import AddExpense from "./components/modals/AddExpense";
 import { ModalProvider } from "../../context/ModalContext";
+import { AuthProvider } from "../../context/AuthContext";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,12 +31,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ModalProvider> {/* Wrap the app with ModalProvider */}
-          <Navbar />
-          {children}
-
-          <AddExpense /> {/* Place the modal component at the root level */}
-        </ModalProvider>
+        <AuthProvider>
+          <ModalProvider>
+            <Navbar />
+            {children}
+            <AddExpense />
+          </ModalProvider>
+        </AuthProvider>
       </body>
     </html>
   );

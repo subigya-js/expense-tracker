@@ -10,16 +10,17 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useModal } from "../../../../context/ModalContext";
+import { useAuth } from "../../../../context/AuthContext";
 import Logo from "../../../assets/logo.png";
 import AddIncome from "@/app/components/modals/AddIncome";
 
 const Navbar = () => {
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [openIncomeModal, setOpenIncomeModal] = useState(false);
+  const { isLoggedIn, logout } = useAuth();
 
   // Modal state
   const { openModal } = useModal();
@@ -28,18 +29,9 @@ const Navbar = () => {
     setOpenIncomeModal(true);
   };
 
-  useEffect(() => {
-    const hasToken = !!localStorage.getItem("token");
-    setIsLoggedIn(hasToken);
-  }, []);
-
   const handleLogout = () => {
-    if (isLoggedIn) {
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-      setIsLoggedIn(false);
-      router.push("/login");
-    }
+    logout();
+    router.push("/login");
   };
 
   return (
