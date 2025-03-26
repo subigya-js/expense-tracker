@@ -14,17 +14,23 @@ import { useEffect, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useModal } from "../../../../context/ModalContext";
 import Logo from "../../../assets/logo.png";
+import AddIncome from "@/app/components/modals/AddIncome";
 
 const Navbar = () => {
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [openIncomeModal, setOpenIncomeModal] = useState(false);
 
   // Modal state
-  const {openModal} = useModal();
+  const { openModal } = useModal();
+
+  const handleOpenIncomeModal = () => {
+    setOpenIncomeModal(true);
+  };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(true);
+    const hasToken = !!localStorage.getItem("token");
+    setIsLoggedIn(hasToken);
   }, []);
 
   const handleLogout = () => {
@@ -73,8 +79,19 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
           {isLoggedIn && (
             <>
-              <Button variant="outline" className="hidden md:inline-flex" onClick={openModal}>
+              <Button
+                variant="outline"
+                className="hidden md:inline-flex mr-2"
+                onClick={openModal}
+              >
                 Add Expense
+              </Button>
+              <Button
+                variant="outline"
+                className="hidden md:inline-flex"
+                onClick={handleOpenIncomeModal}
+              >
+                Add Income
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -102,6 +119,9 @@ const Navbar = () => {
           )}
         </div>
       </div>
+      {openIncomeModal && (
+        <AddIncome isOpen={openIncomeModal} onClose={() => setOpenIncomeModal(false)} />
+      )}
     </nav>
   );
 };

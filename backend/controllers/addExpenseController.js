@@ -13,6 +13,7 @@ const addExpense = asyncHandler(async (req, res) => {
   }
 
   const expense = await Expense.create({
+    user: req.user.id,
     expended_on,
     amount,
     date,
@@ -23,6 +24,7 @@ const addExpense = asyncHandler(async (req, res) => {
   if (expense) {
     res.status(201).json({
       _id: expense._id,
+      user: expense.user,
       expended_on: expense.expended_on,
       amount: expense.amount,
       date: expense.date,
@@ -31,15 +33,15 @@ const addExpense = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid expense");
+    throw new Error("Invalid expense data");
   }
 });
 
-// @desc Get all expenses
+// @desc Get all expenses for a user
 // @route GET /api/expense
 // @access Private
 const getExpenses = asyncHandler(async (req, res) => {
-  const expenses = await Expense.find({});
+  const expenses = await Expense.find({ user: req.user.id });
   res.json(expenses);
 });
 

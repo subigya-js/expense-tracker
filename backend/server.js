@@ -14,6 +14,7 @@ app.use(express.json()); // Parse incoming JSON requests
 
 app.use("/api/auth", require("./routes/userRoutes"));
 app.use("/api/expense", validateToken, require("./routes/addExpenseRoute"));
+app.use("/api/income", validateToken, require("./routes/addIncomeRoute"));
 
 // Error Handler Middleware
 app.use(errorHandler);
