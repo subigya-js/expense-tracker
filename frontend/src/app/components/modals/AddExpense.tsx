@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 const AddExpense = () => {
   const { isOpen, closeModal } = useModal();
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [expense, setExpense] = useState({
     expended_on: "",
     amount: "",
@@ -16,10 +18,43 @@ const AddExpense = () => {
     note: "",
   });
 
-  const onExpenseSubmit = (e: React.FormEvent) => {
+  const onExpenseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(JSON.stringify(expense, null, 2)); // Pretty-prints JSON
-    closeModal();
+    // alert(JSON.stringify(expense, null, 2)); // Pretty-prints JSON
+    setIsLoading(true);
+    setError(null);
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You need to be logged in to add an expense.");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/api/expense/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(expense)
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add expense.");
+      }
+
+      const data = await response.json();
+      console.log("Expense added:", data);
+      closeModal();
+    }
+    catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setIsLoading(false);
+    }
+
   };
 
   return (
@@ -140,9 +175,9 @@ const AddExpense = () => {
               }
             />
           </div>
-
+          <p>{error && error}</p>
           <Button type="submit" className="w-[50%] mx-auto">
-            Submit
+            {isLoading ? "Adding Expense..." : "Add Expense"}
           </Button>
         </form>
 
