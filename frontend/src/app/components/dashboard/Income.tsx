@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { IoArrowUp } from "react-icons/io5";
+import { useIncome } from "../../../../context/IncomeContext";
 
 interface Income {
     _id: string;
@@ -18,6 +19,7 @@ const Income = () => {
     const [totalIncome, setTotalIncome] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const { shouldRefetch } = useIncome();
 
     useEffect(() => {
         const fetchIncomeData = async () => {
@@ -44,7 +46,7 @@ const Income = () => {
             }
         }
         fetchIncomeData();
-    }, []);
+    }, [shouldRefetch]);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;

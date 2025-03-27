@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useIncome } from "../../../../context/IncomeContext";
 
 interface AddIncomeProps {
     isOpen: boolean;
@@ -16,6 +17,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const { triggerRefetch } = useIncome();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -46,7 +48,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
 
             const data = await response.json();
             console.log("Income added:", data);
-
+            triggerRefetch();
             onClose();
         }
         catch (err) {
