@@ -2,21 +2,24 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useModal } from "../../../../context/ModalContext";
+import { useExpense } from "../../../../context/ExpenseContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 
 const AddExpense = () => {
   const { isOpen, closeModal } = useModal();
+  const { triggerRefetch } = useExpense();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [expense, setExpense] = useState({
+  const initialExpenseState = {
     expended_on: "",
     amount: "",
     date: "",
     payment_method: "",
     note: "",
-  });
+  };
+  const [expense, setExpense] = useState(initialExpenseState);
 
   const onExpenseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +50,8 @@ const AddExpense = () => {
 
       const data = await response.json();
       console.log("Expense added:", data);
+      triggerRefetch();
+      setExpense(initialExpenseState);
       closeModal();
     }
     catch (err) {

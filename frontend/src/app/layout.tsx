@@ -5,6 +5,7 @@ import AddExpense from "./components/modals/AddExpense";
 import { ModalProvider } from "../../context/ModalContext";
 import { AuthProvider } from "../../context/AuthContext";
 import { IncomeProvider } from "../../context/IncomeContext";
+import { ExpenseProvider } from "../../context/ExpenseContext";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -34,11 +35,13 @@ export default function RootLayout({
       >
         <AuthProvider>
           <IncomeProvider>
-            <ModalProvider>
-              <Navbar />
-              {children}
-              <AddExpense />
-            </ModalProvider>
+            <ExpenseProvider>
+              <ModalProvider>
+                <Navbar />
+                {children}
+                <AddExpense />
+              </ModalProvider>
+            </ExpenseProvider>
           </IncomeProvider>
         </AuthProvider>
       </body>

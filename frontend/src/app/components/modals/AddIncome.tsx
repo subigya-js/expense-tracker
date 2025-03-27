@@ -10,10 +10,13 @@ interface AddIncomeProps {
 }
 
 const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
-    const [amount, setAmount] = useState<number | ''>('');
-    const [category, setCategory] = useState('');
-    const [date, setDate] = useState('');
-    const [description, setDescription] = useState('');
+    const initialIncomeState = {
+        amount: '' as number | '',
+        category: '',
+        date: '',
+        description: ''
+    };
+    const [income, setIncome] = useState(initialIncomeState);
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -39,7 +42,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify({ amount, category, date, description })
+                body: JSON.stringify(income)
             })
 
             if (!response.ok) {
@@ -49,6 +52,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
             const data = await response.json();
             console.log("Income added:", data);
             triggerRefetch();
+            setIncome(initialIncomeState);
             onClose();
         }
         catch (err) {
@@ -73,8 +77,8 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                         <input
                             type="number"
                             id="amount"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value ? Number(e.target.value) : '')}
+                            value={income.amount}
+                            onChange={(e) => setIncome({ ...income, amount: e.target.value ? Number(e.target.value) : '' })}
                             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                        focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                             required
@@ -86,7 +90,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                         <label htmlFor="category" className="block text-sm font-medium text-gray-700">
                             Category <span className="text-red-500">*</span>
                         </label>
-                        <Select value={category} onValueChange={setCategory}>
+                        <Select value={income.category} onValueChange={(value) => setIncome({ ...income, category: value })}>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
@@ -105,8 +109,8 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                         <input
                             type="date"
                             id="date"
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
+                            value={income.date}
+                            onChange={(e) => setIncome({ ...income, date: e.target.value })}
                             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                        focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                             required
@@ -119,8 +123,8 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                         <input
                             type='text'
                             id="description"
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
+                            value={income.description}
+                            onChange={(e) => setIncome({ ...income, description: e.target.value })}
                             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
              focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 placeholder:italic"
                         ></input>
