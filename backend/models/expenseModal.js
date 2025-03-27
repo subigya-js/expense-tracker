@@ -11,8 +11,9 @@ const expenseSchema = new mongoose.Schema(
       required: [true, "Please add the expense name."],
     },
     amount: {
-      type: String,
+      type: Number,
       required: [true, "Please add the expense amount."],
+      min: [1, "Amount must be at least 1."],
     },
     date: {
       type: String,

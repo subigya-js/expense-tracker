@@ -14,7 +14,7 @@ const AddExpense = () => {
   const [error, setError] = useState<string | null>(null);
   const initialExpenseState = {
     expended_on: "",
-    amount: "",
+    amount: 0,
     date: "",
     payment_method: "",
     note: "",
@@ -102,7 +102,7 @@ const AddExpense = () => {
               Amount <span className="text-red-500">*</span>
             </label>
             <input
-              type="text"
+              type="number"
               id="amount"
               name="amount"
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
@@ -110,8 +110,10 @@ const AddExpense = () => {
               placeholder="100"
               value={expense.amount}
               onChange={(e) =>
-                setExpense({ ...expense, amount: e.target.value })
+                setExpense({ ...expense, amount: parseFloat(e.target.value) || 0 })
               }
+              min="1"
+              step="1"
               required
             />
           </div>
