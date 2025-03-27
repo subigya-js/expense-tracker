@@ -3,6 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "../components/common/Loading";
+import Income from "../components/dashboard/Income";
+import Expense from "../components/dashboard/Expense";
+import Balance from "../components/dashboard/Balance";
+import Savings from "../components/dashboard/Savings";
 
 interface User {
   id: string;
@@ -51,11 +55,17 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-[90vh] flex justify-center items-center">
-      <div className="flex flex-col space-y-4 p-8 bg-white shadow-md rounded-lg min-w-[30%]">
+    <div className="min-h-[90vh] p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <Balance />
+        <Income />
+        <Expense />
+        <Savings />
+      </div>
+      {/* <div className="flex flex-col space-y-4 p-8 bg-white shadow-md rounded-lg min-w-[30%]">
         <h1 className="text-2xl font-bold">Welcome, {user.name}!</h1>
         <p><strong>Email:</strong> {user.email}</p>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -7,8 +7,9 @@ const incomeSchema = new mongoose.Schema(
       ref: 'User',
     },
     amount: {
-      type: String,
+      type: Number,
       required: [true, "Please add the income amount."],
+      min: [1, "Amount must be at least 1."],
     },
     category: {
       type: String,

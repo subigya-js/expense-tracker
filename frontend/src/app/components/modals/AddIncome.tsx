@@ -9,7 +9,7 @@ interface AddIncomeProps {
 }
 
 const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState<number | ''>('');
     const [category, setCategory] = useState('');
     const [date, setDate] = useState('');
     const [description, setDescription] = useState('');
@@ -69,13 +69,15 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                             Amount <span className="text-red-500">*</span>
                         </label>
                         <input
-                            type="text"
+                            type="number"
                             id="amount"
                             value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            onChange={(e) => setAmount(e.target.value ? Number(e.target.value) : '')}
                             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                        focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                             required
+                            min="1"
+                            step="1"
                         />
                     </div>
                     <div>
