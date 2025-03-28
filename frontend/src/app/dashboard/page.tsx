@@ -6,7 +6,7 @@ import Loading from "../components/common/Loading";
 import Balance from "../components/dashboard/Balance";
 import Expense from "../components/dashboard/Expense";
 import Income from "../components/dashboard/Income";
-import Savings from "../components/dashboard/Savings";
+import Savings from "../components/dashboard/Average";
 import BarGraph from "../components/overview/BarGraph";
 
 interface User {

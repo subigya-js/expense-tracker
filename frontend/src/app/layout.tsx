@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "./components/common/Navbar";
+import Footer from "./components/common/Footer";
 import AddExpense from "./components/modals/AddExpense";
 import { ModalProvider } from "../../context/ModalContext";
 import { AuthProvider } from "../../context/AuthContext";
@@ -38,7 +39,10 @@ export default function RootLayout({
             <ExpenseProvider>
               <ModalProvider>
                 <Navbar />
-                {children}
+                <main className="min-h-screen">
+                  {children}
+                </main>
+                <Footer />
                 <AddExpense />
               </ModalProvider>
             </ExpenseProvider>
