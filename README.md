@@ -5,19 +5,21 @@
 ## Features
 
 - User authentication (register, login, logout)
-- Dashboard with expense overview
-- Add, edit, and delete expenses
-- Categorize expenses
-- Filter and sort expenses
-- Responsive design for mobile and desktop
+- Dashboard with income and expense overview
+- Add, edit, and delete income and expenses
+- Categorize income and expenses
+- Filter and sort transactions
+- Interactive bar graph visualization of monthly income and expenses
+- Real-time balance calculation
 
 ## Tech Stack
 
 ### Frontend
-- Next.js (React framework)
+- Next.js 13+ (React framework) with App Router
 - TypeScript
-- Tailwind CSS
-- shadcn/ui components
+- Tailwind CSS for styling
+- shadcn/ui components for UI elements
+- Recharts for data visualization
 
 ### Backend
 - Node.js
@@ -34,6 +36,11 @@ expense-tracker/
 │   ├── src/
 │   │   ├── app/
 │   │   ├── components/
+│   │   │   ├── common/
+│   │   │   ├── dashboard/
+│   │   │   ├── modals/
+│   │   │   └── overview/
+│   │   ├── context/
 │   │   ├── lib/
 │   │   └── ...
 │   ├── package.json
@@ -61,13 +68,19 @@ expense-tracker/
 1. Clone the repository:
    ```
    git clone https://github.com/subigya-js/expense-tracker.git
+   ```
+
+   ```
    cd expense-tracker
    ```
 
 2. Install dependencies for both frontend and backend:
    ```
    cd frontend && npm install
-   cd ../backend && npm install
+   ```
+
+   ```
+   cd backend && npm install
    ```
 
 3. Set up environment variables (see [Configuration](#configuration) section)
@@ -91,12 +104,17 @@ Replace `your_mongodb_connection_string` with your actual MongoDB connection str
 1. Start the backend server:
    ```
    cd backend
+   ```
+   ```
    npm run dev
    ```
 
 2. In a new terminal, start the frontend development server:
    ```
    cd frontend
+   ```
+
+   ```
    npm run dev
    ```
 

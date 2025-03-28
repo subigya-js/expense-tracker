@@ -1,6 +1,6 @@
 # Expense Tracker Backend
 
-This is the backend server for the Expense Tracker application. It provides API endpoints for user authentication and expense management.
+This is the backend server for the Expense Tracker application. It provides API endpoints for user authentication, income management, and expense management.
 
 ## Technologies Used
 
@@ -33,9 +33,22 @@ Replace `your_mongodb_connection_string` with your actual MongoDB connection str
 
 ## API Endpoints
 
+### Authentication
 - POST `/api/auth/register`: Register a new user
 - POST `/api/auth/login`: Login a user
 - GET `/api/auth/current`: Get current user info (protected route)
+
+### Income Management
+- POST `/api/income/`: Add a new income entry
+- GET `/api/income/`: Get all income entries for the current user
+- PUT `/api/income/:id`: Update an income entry
+- DELETE `/api/income/:id`: Delete an income entry
+
+### Expense Management
+- POST `/api/expense/`: Add a new expense entry
+- GET `/api/expense/`: Get all expense entries for the current user
+- PUT `/api/expense/:id`: Update an expense entry
+- DELETE `/api/expense/:id`: Delete an expense entry
 
 For detailed information about request/response formats, refer to the API documentation (TODO: Add link to API docs when available).
 
@@ -43,6 +56,18 @@ For detailed information about request/response formats, refer to the API docume
 
 - `errorHandler`: Global error handling middleware
 - `validateToken`: JWT validation middleware for protected routes
+
+## Database Models
+
+- `userModel`: Defines the schema for user data
+- `incomeModal`: Defines the schema for income entries
+- `expenseModal`: Defines the schema for expense entries
+
+## Controllers
+
+- `userControllers`: Handles user authentication logic
+- `addIncomeController`: Manages income-related operations
+- `addExpenseController`: Manages expense-related operations
 
 ## Database
 
