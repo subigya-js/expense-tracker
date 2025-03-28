@@ -3,10 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "../components/common/Loading";
-import Income from "../components/dashboard/Income";
-import Expense from "../components/dashboard/Expense";
 import Balance from "../components/dashboard/Balance";
+import Expense from "../components/dashboard/Expense";
+import Income from "../components/dashboard/Income";
 import Savings from "../components/dashboard/Savings";
+import BarGraph from "../components/overview/BarGraph";
 
 interface User {
   id: string;
@@ -55,17 +56,20 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-[90vh] p-4">
+    <div className="min-h-[90vh] p-4 flex flex-col gap-5">
+      <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <Balance />
         <Income />
         <Expense />
         <Savings />
       </div>
-      {/* <div className="flex flex-col space-y-4 p-8 bg-white shadow-md rounded-lg min-w-[30%]">
-        <h1 className="text-2xl font-bold">Welcome, {user.name}!</h1>
-        <p><strong>Email:</strong> {user.email}</p>
-      </div> */}
+      <div className="mt-8">
+        <h2 className="text-xl font-semibold mb-4">Income and Expense Overview</h2>
+        <div className="bg-white rounded-lg p-4 max-w-3xl h-[300px]">
+          <BarGraph />
+        </div>
+      </div>
     </div>
   );
 };
