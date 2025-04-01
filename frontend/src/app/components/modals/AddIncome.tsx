@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import React, { useState } from 'react';
 import { useIncome } from "../../../../context/IncomeContext";
 
 interface AddIncomeProps {
@@ -36,7 +36,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
         }
 
         try {
-            const response = await fetch("http://localhost:3001/api/income/add", {
+            const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/income/add", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useModal } from "../../../../context/ModalContext";
+import { useState } from "react";
 import { useExpense } from "../../../../context/ExpenseContext";
+import { useModal } from "../../../../context/ModalContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 
@@ -36,7 +36,7 @@ const AddExpense = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/expense/add", {
+      const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/expense/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

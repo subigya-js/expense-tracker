@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import React from "react";
 import { useAuth } from "../../../context/AuthContext";
 
 interface LoginData {
@@ -29,7 +29,7 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3001/api/auth/login", {
+      const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
