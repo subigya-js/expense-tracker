@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { LuEqualApproximately } from "react-icons/lu";
-import { useIncome } from '../../../../context/IncomeContext';
 import { useExpense } from '../../../../context/ExpenseContext';
+import { useIncome } from '../../../../context/IncomeContext';
 
 interface Transaction {
     amount: string;
@@ -27,12 +27,12 @@ const Average = () => {
                 }
 
                 const [incomeResponse, expenseResponse] = await Promise.all([
-                    fetch("http://localhost:3001/api/income/", {
+                    fetch("https://expense-tracker-pi-beryl.vercel.app/api/income/", {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
                     }),
-                    fetch("http://localhost:3001/api/expense/", {
+                    fetch("https://expense-tracker-pi-beryl.vercel.app/api/expense/", {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }

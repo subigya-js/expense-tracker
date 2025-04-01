@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
 
 interface RegisterData {
   name: string;
@@ -27,7 +27,7 @@ const Register = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3001/api/auth/register", {
+      const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

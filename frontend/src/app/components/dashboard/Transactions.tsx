@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useState } from 'react';
-import { useIncome } from '../../../../context/IncomeContext';
 import { useExpense } from '../../../../context/ExpenseContext';
+import { useIncome } from '../../../../context/IncomeContext';
 import Loading from '../common/Loading';
 
 interface Transaction {
@@ -32,12 +32,12 @@ const Transactions = () => {
                 }
 
                 const [incomeResponse, expenseResponse] = await Promise.all([
-                    fetch("http://localhost:3001/api/income/", {
+                    fetch("https://expense-tracker-pi-beryl.vercel.app/api/income/", {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
                     }),
-                    fetch("http://localhost:3001/api/expense/", {
+                    fetch("https://expense-tracker-pi-beryl.vercel.app/api/expense/", {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
