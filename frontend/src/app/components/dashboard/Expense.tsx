@@ -6,6 +6,7 @@ interface Expense {
     _id: string;
     user: string;
     expended_on: string;
+    category: string;
     amount: string;
     date: string;
     payment_method: string;

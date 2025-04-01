@@ -108,9 +108,10 @@ const AddExpense = () => {
                 <SelectValue placeholder="Select expense category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="housing">Housing</SelectItem>
-                <SelectItem value="shopping">Shopping</SelectItem>
-                <SelectItem value="entertainment">Entertainment</SelectItem>
+                <SelectItem value="Housing">Housing</SelectItem>
+                <SelectItem value="Shopping">Shopping</SelectItem>
+                <SelectItem value="Entertainment">Entertainment</SelectItem>
+                <SelectItem value="Others">Others</SelectItem>
               </SelectContent>
             </Select>
           </div>

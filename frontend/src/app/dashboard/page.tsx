@@ -8,6 +8,7 @@ import Expense from "../components/dashboard/Expense";
 import Income from "../components/dashboard/Income";
 import Savings from "../components/dashboard/Average";
 import BarGraph from "../components/overview/BarGraph";
+import ExpenseBreakdown from "../components/overview/ExpenseBreakdown";
 
 interface User {
   id: string;
@@ -64,10 +65,18 @@ const Dashboard = () => {
         <Expense />
         <Savings />
       </div>
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Income and Expense Overview</h2>
-        <div className="bg-white rounded-lg p-4 max-w-3xl h-[300px]">
-          <BarGraph />
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Income and Expense Overview</h2>
+          <div className="bg-white rounded-lg p-4 h-[300px]">
+            <BarGraph />
+          </div>
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Expense Breakdown</h2>
+          <div className="bg-white rounded-lg p-4">
+            <ExpenseBreakdown />
+          </div>
         </div>
       </div>
     </div>
