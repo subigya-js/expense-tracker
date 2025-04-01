@@ -103,7 +103,6 @@ const BarGraph = () => {
 
     return (
         <div className="w-full border h-[300px] sm:h-[420px] flex flex-col p-4 bg-white rounded-lg shadow">
-            <h2 className="font-semibold mb-4 text-sm">Income vs Expense ({new Date().getFullYear()})</h2>
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                     <XAxis dataKey="month" />

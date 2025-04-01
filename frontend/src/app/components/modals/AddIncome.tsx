@@ -95,10 +95,10 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                                 <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="salary">Salary</SelectItem>
-                                <SelectItem value="freelance">Freelance</SelectItem>
-                                <SelectItem value="investment">Investment</SelectItem>
-                                <SelectItem value="other">Other</SelectItem>
+                                <SelectItem value="Salary">Salary</SelectItem>
+                                <SelectItem value="Freelance">Freelance</SelectItem>
+                                <SelectItem value="Investment">Investment</SelectItem>
+                                <SelectItem value="Other">Other</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

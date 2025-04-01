@@ -79,7 +79,7 @@ const ExpenseBreakdown = () => {
                 <div key={category} className="space-y-2">
                     <div className="flex justify-between font-semibold">
                         <span>{category}</span>
-                        <span>${total.toFixed(2)}</span>
+                        <span>₹{total.toFixed(2)}</span>
                     </div>
                     <Progress value={percentage} className="w-full" />
                     <span className='text-sm'>{percentage.toFixed(2)}% of total expenses</span>

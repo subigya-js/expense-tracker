@@ -67,13 +67,13 @@ const Dashboard = () => {
       </div>
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          <h2 className="text-xl font-semibold mb-4">Income and Expense Overview</h2>
+          <h2 className="text-xl font-semibold mb-4 ml-4">Income and Expense Overview (Yearly- {new Date().getFullYear()}):</h2>
           <div className="bg-white rounded-lg p-4 h-[300px]">
             <BarGraph />
           </div>
         </div>
         <div>
-          <h2 className="text-xl font-semibold mb-4">Expense Breakdown</h2>
+          <h2 className="text-xl font-semibold mb-4 ml-4">Expense Breakdown (Yearly- {new Date().getFullYear()}): </h2>
           <div className="bg-white rounded-lg p-4">
             <ExpenseBreakdown />
           </div>

@@ -59,12 +59,6 @@ const Navbar = () => {
               >
                 Transactions
               </Link>
-              <Link
-                href="/reports"
-                className="text-gray-600 hover:text-gray-800"
-              >
-                Reports
-              </Link>
             </div>
           )}
         </div>
