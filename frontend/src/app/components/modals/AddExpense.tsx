@@ -14,6 +14,7 @@ const AddExpense = () => {
   const [error, setError] = useState<string | null>(null);
   const initialExpenseState = {
     expended_on: "",
+    category: "",
     amount: 0,
     date: "",
     payment_method: "",
@@ -92,6 +93,26 @@ const AddExpense = () => {
               }
               required
             />
+          </div>
+
+          <div>
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Category <span className="text-red-500">*</span>
+            </label>
+            <Select value={expense.category}
+              onValueChange={(value) => setExpense({ ...expense, category: value })}>
+              <SelectTrigger className="mt-1 w-full">
+                <SelectValue placeholder="Select expense category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="housing">Housing</SelectItem>
+                <SelectItem value="shopping">Shopping</SelectItem>
+                <SelectItem value="entertainment">Entertainment</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div>

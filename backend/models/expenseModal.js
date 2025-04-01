@@ -10,6 +10,10 @@ const expenseSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please add the expense name."],
     },
+    category: {
+      type: String,
+      required: [true, "Please add the expense category."],
+    },
     amount: {
       type: Number,
       required: [true, "Please add the expense amount."],

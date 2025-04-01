@@ -5,9 +5,9 @@ const Expense = require("../models/expenseModal");
 // @route POST /api/expense/add
 // @access Private
 const addExpense = asyncHandler(async (req, res) => {
-  const { expended_on, amount, date, payment_method, note } = req.body;
+  const { expended_on, category, amount, date, payment_method, note } = req.body;
 
-  if (!expended_on || !amount || !date || !payment_method) {
+  if (!expended_on || !category || !amount || !date || !payment_method) {
     res.status(400);
     throw new Error("Please fill in all fields");
   }
@@ -15,6 +15,7 @@ const addExpense = asyncHandler(async (req, res) => {
   const expense = await Expense.create({
     user: req.user.id,
     expended_on,
+    category,
     amount,
     date,
     payment_method,
@@ -26,6 +27,7 @@ const addExpense = asyncHandler(async (req, res) => {
       _id: expense._id,
       user: expense.user,
       expended_on: expense.expended_on,
+      category: category,
       amount: expense.amount,
       date: expense.date,
       payment_method: expense.payment_method,
