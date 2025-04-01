@@ -24,7 +24,7 @@ const Income = () => {
     useEffect(() => {
         const fetchIncomeData = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/income/", {
+                const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/income/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

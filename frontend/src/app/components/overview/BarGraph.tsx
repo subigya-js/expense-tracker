@@ -33,12 +33,12 @@ const BarGraph = () => {
                 }
 
                 const [incomeResponse, expenseResponse] = await Promise.all([
-                    fetch("http://localhost:3001/api/income/", {
+                    fetch("https://expense-tracker-pi-beryl.vercel.app/api/income/", {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
                     }),
-                    fetch("http://localhost:3001/api/expense/", {
+                    fetch("https://expense-tracker-pi-beryl.vercel.app/api/expense/", {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }

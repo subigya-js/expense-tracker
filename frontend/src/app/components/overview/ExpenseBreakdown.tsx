@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from 'react'
-import { useExpense } from '../../../../context/ExpenseContext'
-import { Progress } from '@/components/ui/progress'
+import { Progress } from '@/components/ui/progress';
+import { useEffect, useState } from 'react';
+import { useExpense } from '../../../../context/ExpenseContext';
 
 interface Expense {
     _id: string;
@@ -31,7 +31,7 @@ const ExpenseBreakdown = () => {
     useEffect(() => {
         const fetchExpenseData = async () => {
             try {
-                const response = await fetch("http://localhost:3001/api/expense/", {
+                const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/expense/", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
