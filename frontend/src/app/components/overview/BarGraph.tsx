@@ -1,6 +1,5 @@
 "use client"
 
-import { ChartConfig, ChartContainer } from '@/components/ui/chart';
 import React, { useEffect, useState } from 'react';
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts';
 import { useExpense } from '../../../../context/ExpenseContext';
@@ -66,73 +65,55 @@ const BarGraph = () => {
         fetchData();
     }, [shouldRefetchIncome, shouldRefetchExpense]);
 
-const processTransactions = (incomeData: Transaction[], expenseData: Transaction[]): ChartData[] => {
-    const monthlyData: { [key: string]: ChartData } = {};
-    const months = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
+    const processTransactions = (incomeData: Transaction[], expenseData: Transaction[]): ChartData[] => {
+        const monthlyData: { [key: string]: ChartData } = {};
+        const months = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
 
-    // Initialize data for all months of 2025
-    months.forEach((month) => {
-        monthlyData[month] = { month, income: 0, expense: 0 };
-    });
+        const currentYear = new Date().getFullYear();
 
-    const processTransaction = (transaction: Transaction, isIncome: boolean) => {
-        const date = new Date(transaction.date);
-        if (date.getFullYear() !== 2025) return; // Only process 2025 data
+        months.forEach((month) => {
+            monthlyData[month] = { month, income: 0, expense: 0 };
+        });
 
-        const month = date.toLocaleString('default', { month: 'long' });
-        const amount = parseFloat(transaction.amount);
+        const processTransaction = (transaction: Transaction, isIncome: boolean) => {
+            const date = new Date(transaction.date);
+            if (date.getFullYear() !== currentYear) return;
 
-        if (isIncome) {
-            monthlyData[month].income += amount;
-        } else {
-            monthlyData[month].expense += amount;
-        }
+            const month = months[date.getMonth()];
+            const amount = parseFloat(transaction.amount);
+
+            if (isIncome) {
+                monthlyData[month].income += amount;
+            } else {
+                monthlyData[month].expense += amount;
+            }
+        };
+
+        incomeData.forEach(transaction => processTransaction(transaction, true));
+        expenseData.forEach(transaction => processTransaction(transaction, false));
+
+        return months.map(month => monthlyData[month]);
     };
 
-    incomeData.forEach(transaction => processTransaction(transaction, true));
-    expenseData.forEach(transaction => processTransaction(transaction, false));
-
-    return months.map(month => monthlyData[month]);
-};
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
-
-    const chartConfig: ChartConfig = {
-        income: {
-            label: "Income",
-            color: "#4CAF50",
-        },
-        expense: {
-            label: "Expense",
-            color: "#f5291b",
-        },
-    };
+    if (loading) return <div className="flex justify-center items-center h-full">Loading...</div>;
+    if (error) return <div className="text-red-500">Error: {error}</div>;
 
     return (
-        <div className="w-full h-[300px] sm:h-[420px] p-4 bg-white rounded-lg shadow">
-            <ChartContainer config={chartConfig}>
-                <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={chartData}>
-                        <XAxis 
-                            dataKey="month" 
-                            tick={{fontSize: 12}}
-                            tickFormatter={(value) => value.substring(0, 3)}
-                        />
-                        <YAxis 
-                            tick={{fontSize: 12}}
-                            tickFormatter={(value) => `₹${value / 1000}k`}
-                        />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Legend wrapperStyle={{fontSize: 12}} />
-                        <Bar dataKey="income" fill="#4CAF50" name="Income" barSize={30}/>
-                        <Bar dataKey="expense" fill="#f5291b" name="Expense" barSize={30}/>
-                    </BarChart>
-                </ResponsiveContainer>
-            </ChartContainer>
+        <div className="w-full border h-[300px] sm:h-[420px] flex flex-col p-4 bg-white rounded-lg shadow">
+            {/* <h2 className="text-lg font-semibold mb-4">Income vs Expense ({new Date().getFullYear()})</h2> */}
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <XAxis dataKey="month" />
+                    <YAxis tickFormatter={(value) => `₹${value / 1000}k`} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Bar dataKey="income" fill="#4CAF50" name="Income" />
+                    <Bar dataKey="expense" fill="#f5291b" name="Expense" />
+                </BarChart>
+            </ResponsiveContainer>
         </div>
     );
 };
@@ -147,7 +128,7 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
                 <p className="font-bold">{label}</p>
                 <p className="text-green-600">Income: ₹{income.toLocaleString()}</p>
                 <p className="text-red-600">Expense: ₹{expense.toLocaleString()}</p>
-                <p className={`font-semibold text-blue-600`}>
+                <p className={`font-semibold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
                     Balance: ₹{balance.toLocaleString()}
                 </p>
             </div>
