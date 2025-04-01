@@ -10,8 +10,12 @@ COPY . .
 
 EXPOSE 3001
 
-ENV MONGO_URL mongodb+srv://subigya:Gaurav15@expensetracker.kmdq5.mongodb.net/?retryWrites=true&w=majority&appName=ExpenseTracker
+# Use ARG instructions to accept build-time variables
+ARG MONGO_URL
+ARG ACCESS_TOKEN_SECRET
 
-ENV ACCESS_TOKEN_SECRET secret
+# Set environment variables using the ARG values
+ENV MONGO_URL=$MONGO_URL
+ENV ACCESS_TOKEN_SECRET=$ACCESS_TOKEN_SECRET
 
 CMD [ "node", "server.js" ]
