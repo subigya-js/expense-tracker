@@ -54,6 +54,14 @@ frontend/
 └── ...
 ```
 
+## Environment Variables
+
+Create a `.env` file in the root of the frontend directory with the following variables:
+
+```
+NEXT_PUBLIC_API_BASE_URL=your_api_base_url
+```
+
 ## Technologies Used
 
 - [Next.js 13+](https://nextjs.org/) - React framework with App Router
