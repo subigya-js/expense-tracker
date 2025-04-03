@@ -6,6 +6,8 @@ import { useModal } from "../../../../context/ModalContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const AddExpense = () => {
   const { isOpen, closeModal } = useModal();
   const { triggerRefetch } = useExpense();
@@ -36,7 +38,7 @@ const AddExpense = () => {
     }
 
     try {
-      const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/expense/add", {
+      const response = await fetch(`${API_BASE_URL}/api/expense/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

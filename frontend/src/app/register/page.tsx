@@ -11,6 +11,8 @@ interface RegisterData {
   password: string;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const Register = () => {
   const [registerData, setRegisterData] = useState<RegisterData>({
     name: "",
@@ -27,7 +29,7 @@ const Register = () => {
     setError(null);
 
     try {
-      const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/auth/register", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -15,6 +15,8 @@ interface Income {
     updatedAt: string;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const Income = () => {
     const [totalIncome, setTotalIncome] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(true);
@@ -24,7 +26,7 @@ const Income = () => {
     useEffect(() => {
         const fetchIncomeData = async () => {
             try {
-                const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/income/", {
+                const response = await fetch(`${API_BASE_URL}/api/income/`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

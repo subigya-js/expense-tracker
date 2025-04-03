@@ -9,6 +9,8 @@ interface AddIncomeProps {
     onClose: () => void;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
     const initialIncomeState = {
         amount: '' as number | '',
@@ -36,7 +38,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
         }
 
         try {
-            const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/income/add", {
+            const response = await fetch(`${API_BASE_URL}/api/income/add`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

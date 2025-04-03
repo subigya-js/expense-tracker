@@ -12,6 +12,8 @@ interface LoginData {
   password: string;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const LoginPage = () => {
   const router = useRouter();
   const { login } = useAuth();
@@ -29,7 +31,7 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

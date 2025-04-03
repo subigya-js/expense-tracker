@@ -24,6 +24,8 @@ interface CategoryBreakdown {
     }
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const ExpenseBreakdown = () => {
     const { shouldRefetch } = useExpense();
     const [categoryBreakdown, setCategoryBreakdown] = useState<CategoryBreakdown>({});
@@ -31,7 +33,7 @@ const ExpenseBreakdown = () => {
     useEffect(() => {
         const fetchExpenseData = async () => {
             try {
-                const response = await fetch("https://expense-tracker-pi-beryl.vercel.app/api/expense/", {
+                const response = await fetch(`${API_BASE_URL}/api/expense/`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

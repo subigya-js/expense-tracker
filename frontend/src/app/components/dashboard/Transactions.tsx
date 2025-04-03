@@ -15,6 +15,8 @@ interface Transaction {
     expended_on?: string;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const Transactions = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -32,12 +34,12 @@ const Transactions = () => {
                 }
 
                 const [incomeResponse, expenseResponse] = await Promise.all([
-                    fetch("https://expense-tracker-pi-beryl.vercel.app/api/income/", {
+                    fetch(`${API_BASE_URL}/api/income/`, {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
                     }),
-                    fetch("https://expense-tracker-pi-beryl.vercel.app/api/expense/", {
+                    fetch(`${API_BASE_URL}/api/expense/`, {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
