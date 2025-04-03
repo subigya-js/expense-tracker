@@ -99,6 +99,14 @@ ACCESS_TOKEN_SECRET=your_jwt_secret
 
 Replace `your_mongodb_connection_string` with your actual MongoDB connection string and `your_jwt_secret` with a secure random string for JWT signing.
 
+### Frontend
+
+Create a `.env` file in the `frontend/` directory with the following variables:
+
+```
+NEXT_PUBLIC_API_BASE_URL=your_api_base_url
+```
+
 ## Running the Application
 
 1. Start the backend server:
