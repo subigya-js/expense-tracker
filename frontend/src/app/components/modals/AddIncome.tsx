@@ -9,7 +9,7 @@ interface AddIncomeProps {
     onClose: () => void;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
 
 const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
     const initialIncomeState = {

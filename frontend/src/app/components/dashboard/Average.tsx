@@ -10,7 +10,7 @@ interface Transaction {
     date: string;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
 
 const Average = () => {
     const [averages, setAverages] = useState({ income: 0, expense: 0 });

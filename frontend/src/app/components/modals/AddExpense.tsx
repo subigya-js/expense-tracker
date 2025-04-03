@@ -6,7 +6,7 @@ import { useModal } from "../../../../context/ModalContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
 
 const AddExpense = () => {
   const { isOpen, closeModal } = useModal();

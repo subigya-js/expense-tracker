@@ -24,7 +24,7 @@ interface CategoryBreakdown {
     }
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
 
 const ExpenseBreakdown = () => {
     const { shouldRefetch } = useExpense();

@@ -15,7 +15,7 @@ interface Expense {
     updatedAt: string;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
 
 const Expense = () => {
     const [totalExpense, setTotalExpense] = useState<number>(0);
