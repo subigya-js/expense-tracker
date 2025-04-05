@@ -4,13 +4,8 @@ import { useEffect, useState } from 'react';
 import { LuEqualApproximately } from "react-icons/lu";
 import { useExpense } from '../../../../context/ExpenseContext';
 import { useIncome } from '../../../../context/IncomeContext';
-
-interface Transaction {
-    amount: string;
-    date: string;
-}
-
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
+import { fetchExpenses } from '../../../api/fetchExpense';
+import { fetchIncomes } from '../../../api/fetchIncome';
 
 const Average = () => {
     const [averages, setAverages] = useState({ income: 0, expense: 0 });
@@ -23,30 +18,10 @@ const Average = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    throw new Error("No token found");
-                }
-
-                const [incomeResponse, expenseResponse] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/income/`, {
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    }),
-                    fetch(`${API_BASE_URL}/api/expense/`, {
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    })
+                const [incomeData, expenseData] = await Promise.all([
+                    fetchIncomes(),
+                    fetchExpenses()
                 ]);
-
-                if (!incomeResponse.ok || !expenseResponse.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-
-                const incomeData: Transaction[] = await incomeResponse.json();
-                const expenseData: Transaction[] = await expenseResponse.json();
 
                 const currentYear = new Date().getFullYear();
                 const incomeThisYear = incomeData.filter(item => new Date(item.date).getFullYear() === currentYear);

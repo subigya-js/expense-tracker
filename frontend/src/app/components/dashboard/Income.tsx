@@ -3,19 +3,7 @@
 import { useEffect, useState } from "react";
 import { IoArrowUp } from "react-icons/io5";
 import { useIncome } from "../../../../context/IncomeContext";
-
-interface Income {
-    _id: string;
-    user: string;
-    amount: string;
-    category: string;
-    date: string;
-    description: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
+import { fetchIncomes } from "../../../api/fetchIncome";
 
 const Income = () => {
     const [totalIncome, setTotalIncome] = useState<number>(0);
@@ -26,18 +14,7 @@ const Income = () => {
     useEffect(() => {
         const fetchIncomeData = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/income/`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status} - ${response.statusText}`);
-                }
-
-                const data: Income[] = await response.json();
+                const data = await fetchIncomes();
                 const total = data.reduce((sum, income) => sum + parseInt(income.amount), 0);
                 setTotalIncome(total);
             } catch (err) {

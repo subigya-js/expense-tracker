@@ -1,21 +1,7 @@
 import { useEffect, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { useExpense } from "../../../../context/ExpenseContext";
-
-interface Expense {
-    _id: string;
-    user: string;
-    expended_on: string;
-    category: string;
-    amount: string;
-    date: string;
-    payment_method: string;
-    note: string;
-    createdAt: string;
-    updatedAt: string;
-}
-
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
+import { fetchExpenses } from "../../../api/fetchExpense";
 
 const Expense = () => {
     const [totalExpense, setTotalExpense] = useState<number>(0);
@@ -26,18 +12,7 @@ const Expense = () => {
     useEffect(() => {
         const fetchExpenseData = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/expense/`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status} - ${response.statusText}`);
-                }
-
-                const data: Expense[] = await response.json();
+                const data = await fetchExpenses();
                 const total = data.reduce((sum, expense) => sum + parseInt(expense.amount), 0);
                 setTotalExpense(total);
             } catch (err) {

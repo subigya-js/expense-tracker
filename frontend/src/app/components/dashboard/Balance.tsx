@@ -4,12 +4,8 @@ import { useEffect, useState } from "react";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { useExpense } from "../../../../context/ExpenseContext";
 import { useIncome } from "../../../../context/IncomeContext";
-
-interface Transaction {
-    amount: string;
-}
-
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
+import { fetchIncomes } from "../../../api/fetchIncome";
+import { fetchExpenses } from "../../../api/fetchExpense";
 
 const Balance = () => {
     const [balance, setBalance] = useState<number>(0);
@@ -22,30 +18,10 @@ const Balance = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    throw new Error("No token found");
-                }
-
-                const [incomeResponse, expenseResponse] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/income/`, {
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    }),
-                    fetch(`${API_BASE_URL}/api/expense/`, {
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    })
+                const [incomeData, expenseData] = await Promise.all([
+                    fetchIncomes(),
+                    fetchExpenses()
                 ]);
-
-                if (!incomeResponse.ok || !expenseResponse.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-
-                const incomeData: Transaction[] = await incomeResponse.json();
-                const expenseData: Transaction[] = await expenseResponse.json();
 
                 const totalIncome = incomeData.reduce((sum, income) => sum + parseFloat(income.amount), 0);
                 const totalExpense = expenseData.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);

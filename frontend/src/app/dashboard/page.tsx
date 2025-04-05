@@ -19,6 +19,12 @@ interface User {
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [balanceLoading, setBalanceLoading] = useState(true);
+  const [incomeLoading, setIncomeLoading] = useState(true);
+  const [expenseLoading, setExpenseLoading] = useState(true);
+  const [savingsLoading, setSavingsLoading] = useState(true);
+  const [barGraphLoading, setBarGraphLoading] = useState(true);
+  const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -36,13 +42,56 @@ const Dashboard = () => {
         throw new Error("Invalid user data");
       }
       setUser(parsedUser);
+      setLoading(false);
+
+      // Fetch data for all components
+      fetchBalanceData();
+      fetchIncomeData();
+      fetchExpenseData();
+      fetchSavingsData();
+      fetchBarGraphData();
+      fetchExpenseBreakdownData();
     } catch (error) {
       console.error("Error parsing user data:", error);
       router.push("/login");
-    } finally {
-      setLoading(false);
     }
   }, [router]);
+
+  const fetchBalanceData = async () => {
+    // Simulating API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setBalanceLoading(false);
+  };
+
+  const fetchIncomeData = async () => {
+    // Simulating API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    setIncomeLoading(false);
+  };
+
+  const fetchExpenseData = async () => {
+    // Simulating API call
+    await new Promise(resolve => setTimeout(resolve, 1200));
+    setExpenseLoading(false);
+  };
+
+  const fetchSavingsData = async () => {
+    // Simulating API call
+    await new Promise(resolve => setTimeout(resolve, 800));
+    setSavingsLoading(false);
+  };
+
+  const fetchBarGraphData = async () => {
+    // Simulating API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    setBarGraphLoading(false);
+  };
+
+  const fetchExpenseBreakdownData = async () => {
+    // Simulating API call
+    await new Promise(resolve => setTimeout(resolve, 1800));
+    setExpenseBreakdownLoading(false);
+  };
 
   if (loading) {
     return (
@@ -54,6 +103,16 @@ const Dashboard = () => {
 
   if (!user) {
     return null; // This should not happen, but just in case
+  }
+
+  const isAllDataLoaded = !balanceLoading && !incomeLoading && !expenseLoading && !savingsLoading && !barGraphLoading && !expenseBreakdownLoading;
+
+  if (!isAllDataLoaded) {
+    return (
+      <div className="min-h-[90vh] flex justify-center items-center">
+        <Loading />
+      </div>
+    );
   }
 
   return (

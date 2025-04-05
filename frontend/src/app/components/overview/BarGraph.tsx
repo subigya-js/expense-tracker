@@ -4,19 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts';
 import { useExpense } from '../../../../context/ExpenseContext';
 import { useIncome } from '../../../../context/IncomeContext';
-
-interface Transaction {
-    amount: string;
-    date: string;
-}
+import { fetchIncomes, Income } from '../../../api/fetchIncome';
+import { fetchExpenses, Expense } from '../../../api/fetchExpense';
 
 interface ChartData {
     month: string;
     income: number;
     expense: number;
 }
-
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
 
 const BarGraph = () => {
     const [loading, setLoading] = useState<boolean>(true);
@@ -29,30 +24,12 @@ const BarGraph = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    throw new Error("No token found");
-                }
+                setError(null);
 
-                const [incomeResponse, expenseResponse] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/income/`, {
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    }),
-                    fetch(`${API_BASE_URL}/api/expense/`, {
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    })
+                const [incomeData, expenseData] = await Promise.all([
+                    fetchIncomes(),
+                    fetchExpenses()
                 ]);
-
-                if (!incomeResponse.ok || !expenseResponse.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-
-                const incomeData: Transaction[] = await incomeResponse.json();
-                const expenseData: Transaction[] = await expenseResponse.json();
 
                 const processedData = processTransactions(incomeData, expenseData);
                 setChartData(processedData);
@@ -67,7 +44,7 @@ const BarGraph = () => {
         fetchData();
     }, [shouldRefetchIncome, shouldRefetchExpense]);
 
-    const processTransactions = (incomeData: Transaction[], expenseData: Transaction[]): ChartData[] => {
+    const processTransactions = (incomeData: Income[], expenseData: Expense[]): ChartData[] => {
         const monthlyData: { [key: string]: ChartData } = {};
         const months = [
             'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -80,7 +57,7 @@ const BarGraph = () => {
             monthlyData[month] = { month, income: 0, expense: 0 };
         });
 
-        const processTransaction = (transaction: Transaction, isIncome: boolean) => {
+        const processTransaction = (transaction: Income | Expense, isIncome: boolean) => {
             const date = new Date(transaction.date);
             if (date.getFullYear() !== currentYear) return;
 
