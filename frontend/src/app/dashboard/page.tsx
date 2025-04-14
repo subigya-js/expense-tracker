@@ -55,32 +55,26 @@ const Dashboard = () => {
   }, [router]);
 
   const fetchBalanceData = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
     setBalanceLoading(false);
   };
 
   const fetchIncomeData = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1500));
     setIncomeLoading(false);
   };
 
   const fetchExpenseData = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1200));
     setExpenseLoading(false);
   };
 
   const fetchSavingsData = async () => {
-    await new Promise(resolve => setTimeout(resolve, 800));
     setSavingsLoading(false);
   };
 
   const fetchBarGraphData = async () => {
-    await new Promise(resolve => setTimeout(resolve, 2000));
     setBarGraphLoading(false);
   };
 
   const fetchExpenseBreakdownData = async () => {
-    await new Promise(resolve => setTimeout(resolve, 1800));
     setExpenseBreakdownLoading(false);
   };
 
