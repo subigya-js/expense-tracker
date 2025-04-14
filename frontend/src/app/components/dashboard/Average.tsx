@@ -19,8 +19,8 @@ const Average: React.FC<AverageProps> = ({income, expense, loading, error}) => {
                 <LuEqualApproximately className="text-black" size={18} />
             </div>
             <div className="flex justify-between">
-                <p className="text-green-600 text-md font-semibold">Income: ₹{Number(income.toFixed(2)).toLocaleString()}</p>
-                <p className="text-red-600 text-md font-semibold">Expenses: ₹{Number(expense.toFixed(2)).toLocaleString()}</p>
+                <p className="text-green-600 text-md font-semibold">Income: ₹{Number(income.toFixed(2)).toLocaleString("en-IN")}</p>
+                <p className="text-red-600 text-md font-semibold">Expenses: ₹{Number(expense.toFixed(2)).toLocaleString("en-IN")}</p>
             </div>
         </div>
     )

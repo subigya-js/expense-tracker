@@ -19,7 +19,7 @@ const Income: React.FC<IncomeProps> = ({ data, loading, error }) => {
                 <h1 className="text-md text-black">Income</h1>
                 <IoArrowUp className="text-green-500" size={18} />
             </div>
-            <p className="text-black text-2xl font-bold">₹ {totalIncome.toFixed(2).toLocaleString()}</p>
+            <p className="text-black text-2xl font-bold">₹{Number(totalIncome.toFixed(2)).toLocaleString("en-IN")}</p>
         </div>
     )
 }
