@@ -84,12 +84,18 @@ const Dashboard = () => {
     fetchExpenseData()
   }, [])
 
-  // Balance
+  // Balance and Average
   useEffect(() => {
-    const fetchBalanceData = async () => {
-      setBalanceLoading(true)
+    const calculateData = async () => {
+      setBalanceLoading(true);
+      setAverageLoading(true);
 
       try {
+        if (incomeData.length === 0 || expenseData.length === 0) {
+          // Data not yet loaded, exit early
+          return;
+        }
+
         const parseAmount = (amount: string) => {
           const parsed = parseFloat(amount);
           return isNaN(parsed) ? 0 : parsed;
@@ -98,50 +104,32 @@ const Dashboard = () => {
         const totalIncome = incomeData.reduce((sum, income) => sum + parseAmount(income.amount), 0);
         const totalExpense = expenseData.reduce((sum, expense) => sum + parseAmount(expense.amount), 0);
 
-        setBalanceData(totalIncome - totalExpense);
-      }
-      catch (error) {
-        setBalanceError(error instanceof Error ? error : new Error('An unknown error occurred'));
-      }
-      finally {
-        setBalanceLoading(false);
-      }
-    }
+        // Calculate balance
+        const balance = totalIncome - totalExpense;
+        setBalanceData(balance);
 
-    fetchBalanceData()
-  }, [incomeData, expenseData])
-
-  // Average
-  useEffect(() => {
-    const fetchAverageData = async () => {
-      setAverageLoading(true)
-
-      try {
+        // Calculate averages
         const currentYear = new Date().getFullYear();
         const incomeThisYear = incomeData.filter(item => new Date(item.date).getFullYear() === currentYear);
         const expensesThisYear = expenseData.filter(item => new Date(item.date).getFullYear() === currentYear);
 
-        const totalIncome = incomeThisYear.reduce((sum, item) => sum + parseFloat(item.amount), 0);
-        const totalExpense = expensesThisYear.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+        const totalIncomeThisYear = incomeThisYear.reduce((sum, item) => sum + parseAmount(item.amount), 0);
+        const totalExpenseThisYear = expensesThisYear.reduce((sum, item) => sum + parseAmount(item.amount), 0);
 
-        setAverageIncome(totalIncome / 12);
-        setAverageExpense(totalExpense / 12);
+        setAverageIncome(totalIncomeThisYear / 12);
+        setAverageExpense(totalExpenseThisYear / 12);
 
-        console.log("Average Income:", averageIncome);
-        console.log("Average Expense:", averageExpense);
-
-        setBalanceData(averageIncome - averageExpense);
-      }
-      catch (error) {
+      } catch (error) {
+        setBalanceError(error instanceof Error ? error : new Error('An unknown error occurred'));
         setAverageError(error instanceof Error ? error : new Error('An unknown error occurred'));
-      }
-      finally {
+      } finally {
+        setBalanceLoading(false);
         setAverageLoading(false);
       }
-    }
+    };
 
-    fetchAverageData()
-  }, [incomeData, expenseData])
+    calculateData();
+  }, [incomeData, expenseData]);
 
 
   useEffect(() => {
@@ -169,43 +157,8 @@ const Dashboard = () => {
     }
   }, [router]);
 
-  const fetchBalanceData = async () => {
-    setBalanceLoading(false);
-  };
-
-  const fetchIncomeData = async () => {
-    setIncomeLoading(false);
-  };
-
-  const fetchExpenseData = async () => {
-    setExpenseLoading(false);
-  };
-
-  const fetchAverageData = async () => {
-    setAverageLoading(false);
-  };
-
-  const fetchBarGraphData = async () => {
-    setBarGraphLoading(false);
-  };
-
-  const fetchExpenseBreakdownData = async () => {
-    setExpenseBreakdownLoading(false);
-  };
-
   const fetchAllData = async () => {
-    setBalanceLoading(true);
-    setIncomeLoading(true);
-    setExpenseLoading(true);
-    setAverageLoading(true);
-    setBarGraphLoading(true);
-    setExpenseBreakdownLoading(true);
-
     const results = await Promise.allSettled([
-      fetchBalanceData(),
-      fetchIncomeData(),
-      fetchExpenseData(),
-      fetchAverageData(),
       fetchBarGraphData(),
       fetchExpenseBreakdownData()
     ]);
@@ -215,6 +168,14 @@ const Dashboard = () => {
         console.error(`API call ${index + 1} failed:`, result.reason);
       }
     });
+  };
+
+  const fetchBarGraphData = async () => {
+    setBarGraphLoading(false);
+  };
+
+  const fetchExpenseBreakdownData = async () => {
+    setExpenseBreakdownLoading(false);
   };
 
   const isAllDataLoaded =

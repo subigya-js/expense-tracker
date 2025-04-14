@@ -18,7 +18,7 @@ const Balance: React.FC<BalanceProps> = ({data, loading, error}) => {
                 <FaIndianRupeeSign className="text-black" size={18} />
             </div>
             <p className={`text-2xl font-bold ${data >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                ₹ {data.toFixed(2).toLocaleString()}
+                ₹ {isNaN(data) ? '0.00' : data.toFixed(2).toLocaleString()}
             </p>
         </div>
     )
