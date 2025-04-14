@@ -3,13 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "../components/common/Loading";
-import Savings from "../components/dashboard/Average";
+import Average from "../components/dashboard/Average";
 import Balance from "../components/dashboard/Balance";
 import Expense from "../components/dashboard/Expense";
 import Income from "../components/dashboard/Income";
 import BarGraph from "../components/overview/BarGraph";
 import ExpenseBreakdown from "../components/overview/ExpenseBreakdown";
 
+import { Expense as ExpenseType, fetchExpenses } from "@/api/fetchExpense";
 import { Income as IncomeType, fetchIncomes } from "@/api/fetchIncome";
 
 interface User {
@@ -26,9 +27,12 @@ const Dashboard = () => {
   const [incomeLoading, setIncomeLoading] = useState(true);
   const [incomeError, setIncomeError] = useState<Error | null>(null);
 
-  const [balanceLoading, setBalanceLoading] = useState(true);
+  const [expenseData, setExpenseData] = useState<ExpenseType[]>([]);
   const [expenseLoading, setExpenseLoading] = useState(true);
-  const [savingsLoading, setSavingsLoading] = useState(true);
+  const [expenseError, setExpenseError] = useState<Error | null>(null);
+
+  const [balanceLoading, setBalanceLoading] = useState(true);
+  const [averageLoading, setAverageLoading,] = useState(true);
   const [barGraphLoading, setBarGraphLoading] = useState(true);
   const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
 
@@ -48,8 +52,27 @@ const Dashboard = () => {
         setIncomeLoading(false);
       }
     }
-  
+
     fetchIncomeData()
+  }, [])
+
+  useEffect(() => {
+    const fetchExpenseData = async () => {
+      setExpenseLoading(true)
+
+      try {
+        const data = await fetchExpenses()
+        setExpenseData(data)
+      }
+      catch (error) {
+        setExpenseError(error instanceof Error ? error : new Error('An unknown error occurred'));
+      }
+      finally {
+        setExpenseLoading(false);
+      }
+    }
+
+    fetchExpenseData()
   }, [])
 
   useEffect(() => {
@@ -89,8 +112,8 @@ const Dashboard = () => {
     setExpenseLoading(false);
   };
 
-  const fetchSavingsData = async () => {
-    setSavingsLoading(false);
+  const fetchAverageData = async () => {
+    setAverageLoading, (false);
   };
 
   const fetchBarGraphData = async () => {
@@ -105,7 +128,7 @@ const Dashboard = () => {
     setBalanceLoading(true);
     setIncomeLoading(true);
     setExpenseLoading(true);
-    setSavingsLoading(true);
+    setAverageLoading, (true);
     setBarGraphLoading(true);
     setExpenseBreakdownLoading(true);
 
@@ -113,7 +136,7 @@ const Dashboard = () => {
       fetchBalanceData(),
       fetchIncomeData(),
       fetchExpenseData(),
-      fetchSavingsData(),
+      fetchAverageData(),
       fetchBarGraphData(),
       fetchExpenseBreakdownData()
     ]);
@@ -129,9 +152,11 @@ const Dashboard = () => {
     !balanceLoading &&
     !incomeLoading &&
     !expenseLoading &&
-    !savingsLoading &&
+    !averageLoading &&
     !barGraphLoading &&
     !expenseBreakdownLoading;
+
+  console.log(isAllDataLoaded)
 
   if (loading || !user || incomeLoading) {
     return (
@@ -147,9 +172,9 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <Balance />
-        <Income data ={incomeData} loading={incomeLoading} error={incomeError}/>
-        <Expense />
-        <Savings />
+        <Income data={incomeData} loading={incomeLoading} error={incomeError} />
+        <Expense data={expenseData} loading={expenseLoading} error={expenseError} />
+        <Average />
       </div>
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">

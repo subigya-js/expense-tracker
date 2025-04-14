@@ -1,34 +1,19 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { Expense as ExpenseType } from "@/api/fetchExpense";
 import { IoArrowDown } from "react-icons/io5";
-import { useExpense } from "../../../../context/ExpenseContext";
-import { fetchExpenses } from "../../../api/fetchExpense";
 
-const Expense = () => {
-    const [totalExpense, setTotalExpense] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const { shouldRefetch } = useExpense();
+interface ExpenseProps{
+    data: ExpenseType[];
+    loading: boolean;
+    error: Error | null;
+}
 
-    useEffect(() => {
-        const fetchExpenseData = async () => {
-            try {
-                const data = await fetchExpenses();
-                const total = data.reduce((sum, expense) => sum + parseInt(expense.amount), 0);
-                setTotalExpense(total);
-            } catch (err) {
-                setError((err as Error).message);
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchExpenseData();
-    }, [shouldRefetch])
+const Expense: React.FC<ExpenseProps> = ({data, loading, error}) => {
+    const totalExpense = data.reduce((sum, expense) => sum + parseInt(expense.amount), 0);
 
     if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    if (error) return <div>Error: {error.message}</div>;
 
     return (
         <div className="flex flex-col space-y-4 p-6 bg-white shadow-md rounded-lg w-full min-h-[120px] border border-gray-400">
