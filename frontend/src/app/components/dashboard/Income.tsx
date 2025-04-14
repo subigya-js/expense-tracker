@@ -1,34 +1,17 @@
-"use client"
-
-import { useEffect, useState } from "react";
+import { Income as IncomeType } from "@/api/fetchIncome";
 import { IoArrowUp } from "react-icons/io5";
-import { useIncome } from "../../../../context/IncomeContext";
-import { fetchIncomes } from "../../../api/fetchIncome";
 
-const Income = () => {
-    const [totalIncome, setTotalIncome] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const { shouldRefetch } = useIncome();
+interface IncomeProps {
+    data: IncomeType[];
+    loading: boolean;
+    error: Error | null;
+  }
 
-    useEffect(() => {
-        const fetchIncomeData = async () => {
-            try {
-                const data = await fetchIncomes();
-                const total = data.reduce((sum, income) => sum + parseInt(income.amount), 0);
-                setTotalIncome(total);
-            } catch (err) {
-                setError((err as Error).message);
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        }
-        fetchIncomeData();
-    }, [shouldRefetch]);
+const Income: React.FC<IncomeProps> = ({ data, loading, error }) => {
+    const totalIncome = data.reduce((sum, income) => sum + parseInt(income.amount), 0);
 
     if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    if (error) return <div>Error: {error.message}</div>;
 
     return (
         <div className="flex flex-col space-y-4 p-6 bg-white shadow-md rounded-lg w-full min-h-[120px] border border-gray-400">

@@ -10,6 +10,8 @@ import Income from "../components/dashboard/Income";
 import BarGraph from "../components/overview/BarGraph";
 import ExpenseBreakdown from "../components/overview/ExpenseBreakdown";
 
+import { Income as IncomeType, fetchIncomes } from "@/api/fetchIncome";
+
 interface User {
   id: string;
   name: string;
@@ -20,14 +22,35 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const [balanceLoading, setBalanceLoading] = useState(true);
+  const [incomeData, setIncomeData] = useState<IncomeType[]>([]);
   const [incomeLoading, setIncomeLoading] = useState(true);
+  const [incomeError, setIncomeError] = useState<Error | null>(null);
+
+  const [balanceLoading, setBalanceLoading] = useState(true);
   const [expenseLoading, setExpenseLoading] = useState(true);
   const [savingsLoading, setSavingsLoading] = useState(true);
   const [barGraphLoading, setBarGraphLoading] = useState(true);
   const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchIncomeData = async () => {
+      setIncomeLoading(true);
+      try {
+        const data = await fetchIncomes()
+        setIncomeData(data)
+      }
+      catch (error) {
+        setIncomeError(error instanceof Error ? error : new Error('An unknown error occurred'));
+      }
+      finally {
+        setIncomeLoading(false);
+      }
+    }
+  
+    fetchIncomeData()
+  }, [])
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -110,29 +133,13 @@ const Dashboard = () => {
     !barGraphLoading &&
     !expenseBreakdownLoading;
 
-  if (loading || !user) {
+  if (loading || !user || incomeLoading) {
     return (
       <div className="min-h-[90vh] flex justify-center items-center">
         <Loading />
       </div>
     );
   }
-
-  if (!isAllDataLoaded) {
-    return (
-      <div className="min-h-[90vh] flex justify-center items-center">
-        <Loading />
-      </div>
-    );
-  }
-
-  console.log("Balance Data:", balanceLoading);
-  console.log("Income Data:", incomeLoading);
-  console.log("Expense Data:", expenseLoading);
-  console.log("Savings Data:", savingsLoading);
-  console.log("Bar Graph Data:", barGraphLoading);
-  console.log("Expense Breakdown Data:", expenseBreakdownLoading);
-  console.log("All Data Loaded:", isAllDataLoaded);
 
   return (
     <div className="min-h-[90vh] p-4 flex flex-col gap-5">
@@ -140,7 +147,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         <Balance />
-        <Income />
+        <Income data ={incomeData} loading={incomeLoading} error={incomeError}/>
         <Expense />
         <Savings />
       </div>

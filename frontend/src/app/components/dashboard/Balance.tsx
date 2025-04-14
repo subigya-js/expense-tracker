@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { FaIndianRupeeSign } from "react-icons/fa6";
 import { useExpense } from "../../../../context/ExpenseContext";
 import { useIncome } from "../../../../context/IncomeContext";
-import { fetchIncomes } from "../../../api/fetchIncome";
 import { fetchExpenses } from "../../../api/fetchExpense";
+import { fetchIncomes } from "../../../api/fetchIncome";
 
 const Balance = () => {
     const [balance, setBalance] = useState<number>(0);

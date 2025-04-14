@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect, useState } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { useExpense } from "../../../../context/ExpenseContext";
