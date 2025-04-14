@@ -5,19 +5,25 @@ import { useExpense } from '../../../../context/ExpenseContext';
 import { useIncome } from '../../../../context/IncomeContext';
 import Loading from '../common/Loading';
 
+import { Expense, fetchExpenses } from '../../../api/fetchExpense';
+import { fetchIncomes, Income } from '../../../api/fetchIncome';
+
 interface Transaction {
-    _id: string;
-    amount: number;
+    _id?: string;
+    amount: number | string;
     date: string;
-    description: string;
+    description?: string;
     type: 'income' | 'expense';
     category?: string;
     expended_on?: string;
 }
 
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
+interface TransactionsProps {
+    incomeData?: Income[];
+    expenseData?: Expense[];
+}
 
-const Transactions = () => {
+const Transactions: React.FC<TransactionsProps> = ({ incomeData, expenseData }) => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -28,38 +34,30 @@ const Transactions = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const token = localStorage.getItem("token");
-                if (!token) {
-                    throw new Error("No token found");
+                let incomeTransactions: Income[];
+                let expenseTransactions: Expense[];
+
+                if (incomeData && expenseData) {
+                    incomeTransactions = incomeData;
+                    expenseTransactions = expenseData;
+                } else {
+                    [incomeTransactions, expenseTransactions] = await Promise.all([
+                        fetchIncomes(),
+                        fetchExpenses()
+                    ]);
                 }
-
-                const [incomeResponse, expenseResponse] = await Promise.all([
-                    fetch(`${API_BASE_URL}/api/income/`, {
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    }),
-                    fetch(`${API_BASE_URL}/api/expense/`, {
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    })
-                ]);
-
-                if (!incomeResponse.ok || !expenseResponse.ok) {
-                    throw new Error("Failed to fetch data");
-                }
-
-                const incomeData: Transaction[] = await incomeResponse.json();
-                const expenseData: Transaction[] = await expenseResponse.json();
 
                 const allTransactions = [
-                    ...incomeData.map(item => ({ ...item, type: 'income' as const })),
-                    ...expenseData.map(item => ({ ...item, type: 'expense' as const }))
+                    ...incomeTransactions.map(item => ({ ...item, type: 'income' as const })),
+                    ...expenseTransactions.map(item => ({ ...item, type: 'expense' as const }))
                 ];
 
                 // Sort transactions by date, most recent first
-                allTransactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                allTransactions.sort((a, b) => {
+                    const dateA = new Date(a.date);
+                    const dateB = new Date(b.date);
+                    return dateB.getTime() - dateA.getTime();
+                });
 
                 setTransactions(allTransactions);
             } catch (err) {
@@ -71,7 +69,7 @@ const Transactions = () => {
         };
 
         fetchData();
-    }, [shouldRefetchIncome, shouldRefetchExpense]);
+    }, [incomeData, expenseData, shouldRefetchIncome, shouldRefetchExpense]);
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);

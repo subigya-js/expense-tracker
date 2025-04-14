@@ -2,6 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useIncome } from "../../../context/IncomeContext";
+import { useExpense } from "../../../context/ExpenseContext";
 import Loading from "../components/common/Loading";
 import Average from "../components/dashboard/Average";
 import Balance from "../components/dashboard/Balance";
@@ -43,6 +45,9 @@ const Dashboard = () => {
   const [barGraphLoading, setBarGraphLoading] = useState(true);
   const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
 
+  const { shouldRefetch: shouldRefetchIncome } = useIncome();
+  const { shouldRefetch: shouldRefetchExpense } = useExpense();
+
   const router = useRouter();
 
   // Income
@@ -62,7 +67,7 @@ const Dashboard = () => {
     }
 
     fetchIncomeData()
-  }, [])
+  }, [shouldRefetchIncome])
 
   // Expense
   useEffect(() => {
@@ -82,7 +87,7 @@ const Dashboard = () => {
     }
 
     fetchExpenseData()
-  }, [])
+  }, [shouldRefetchExpense])
 
   // Balance and Average
   useEffect(() => {
