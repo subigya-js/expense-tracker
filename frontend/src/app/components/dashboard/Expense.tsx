@@ -21,7 +21,7 @@ const Expense: React.FC<ExpenseProps> = ({data, loading, error}) => {
                 <h1 className="text-md text-black">Expense</h1>
                 <IoArrowDown className="text-red-500" size={18} />
             </div>
-            <p className="text-black text-2xl font-bold">₹ {totalExpense.toLocaleString()}</p>
+            <p className="text-black text-2xl font-bold">₹ {totalExpense.toFixed(2).toLocaleString()}</p>
         </div>
     )
 }

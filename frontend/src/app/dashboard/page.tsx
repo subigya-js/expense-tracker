@@ -35,7 +35,11 @@ const Dashboard = () => {
   const [balanceLoading, setBalanceLoading] = useState(true);
   const [balanceError, setBalanceError] = useState<Error | null>(null);
 
+  const [averageIncome, setAverageIncome] = useState<number>(0);
+  const [averageExpense, setAverageExpense] = useState<number>(0);
+  const [averageError, setAverageError] = useState<Error | null>(null);
   const [averageLoading, setAverageLoading,] = useState(true);
+
   const [barGraphLoading, setBarGraphLoading] = useState(true);
   const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
 
@@ -105,6 +109,38 @@ const Dashboard = () => {
     }
 
     fetchBalanceData()
+  }, [incomeData, expenseData])
+
+  // Average
+  useEffect(() => {
+    const fetchAverageData = async () => {
+      setAverageLoading(true)
+
+      try {
+        const currentYear = new Date().getFullYear();
+        const incomeThisYear = incomeData.filter(item => new Date(item.date).getFullYear() === currentYear);
+        const expensesThisYear = expenseData.filter(item => new Date(item.date).getFullYear() === currentYear);
+
+        const totalIncome = incomeThisYear.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+        const totalExpense = expensesThisYear.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+
+        setAverageIncome(totalIncome / 12);
+        setAverageExpense(totalExpense / 12);
+
+        console.log("Average Income:", averageIncome);
+        console.log("Average Expense:", averageExpense);
+
+        setBalanceData(averageIncome - averageExpense);
+      }
+      catch (error) {
+        setAverageError(error instanceof Error ? error : new Error('An unknown error occurred'));
+      }
+      finally {
+        setAverageLoading(false);
+      }
+    }
+
+    fetchAverageData()
   }, [incomeData, expenseData])
 
 
@@ -204,10 +240,10 @@ const Dashboard = () => {
       <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <Balance data={balanceData} loading={balanceLoading} error={balanceError}/>
+        <Balance data={balanceData} loading={balanceLoading} error={balanceError} />
         <Income data={incomeData} loading={incomeLoading} error={incomeError} />
         <Expense data={expenseData} loading={expenseLoading} error={expenseError} />
-        <Average />
+        <Average income={averageIncome} expense={averageExpense} loading={averageLoading} error={averageError} />
       </div>
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
