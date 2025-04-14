@@ -31,13 +31,17 @@ const Dashboard = () => {
   const [expenseLoading, setExpenseLoading] = useState(true);
   const [expenseError, setExpenseError] = useState<Error | null>(null);
 
+  const [balanceData, setBalanceData] = useState<number>(0);
   const [balanceLoading, setBalanceLoading] = useState(true);
+  const [balanceError, setBalanceError] = useState<Error | null>(null);
+
   const [averageLoading, setAverageLoading,] = useState(true);
   const [barGraphLoading, setBarGraphLoading] = useState(true);
   const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
 
   const router = useRouter();
 
+  // Income
   useEffect(() => {
     const fetchIncomeData = async () => {
       setIncomeLoading(true);
@@ -56,6 +60,7 @@ const Dashboard = () => {
     fetchIncomeData()
   }, [])
 
+  // Expense
   useEffect(() => {
     const fetchExpenseData = async () => {
       setExpenseLoading(true)
@@ -74,6 +79,34 @@ const Dashboard = () => {
 
     fetchExpenseData()
   }, [])
+
+  // Balance
+  useEffect(() => {
+    const fetchBalanceData = async () => {
+      setBalanceLoading(true)
+
+      try {
+        const parseAmount = (amount: string) => {
+          const parsed = parseFloat(amount);
+          return isNaN(parsed) ? 0 : parsed;
+        };
+
+        const totalIncome = incomeData.reduce((sum, income) => sum + parseAmount(income.amount), 0);
+        const totalExpense = expenseData.reduce((sum, expense) => sum + parseAmount(expense.amount), 0);
+
+        setBalanceData(totalIncome - totalExpense);
+      }
+      catch (error) {
+        setBalanceError(error instanceof Error ? error : new Error('An unknown error occurred'));
+      }
+      finally {
+        setBalanceLoading(false);
+      }
+    }
+
+    fetchBalanceData()
+  }, [incomeData, expenseData])
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -113,7 +146,7 @@ const Dashboard = () => {
   };
 
   const fetchAverageData = async () => {
-    setAverageLoading, (false);
+    setAverageLoading(false);
   };
 
   const fetchBarGraphData = async () => {
@@ -128,7 +161,7 @@ const Dashboard = () => {
     setBalanceLoading(true);
     setIncomeLoading(true);
     setExpenseLoading(true);
-    setAverageLoading, (true);
+    setAverageLoading(true);
     setBarGraphLoading(true);
     setExpenseBreakdownLoading(true);
 
@@ -171,7 +204,7 @@ const Dashboard = () => {
       <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <Balance />
+        <Balance data={balanceData} loading={balanceLoading} error={balanceError}/>
         <Income data={incomeData} loading={incomeLoading} error={incomeError} />
         <Expense data={expenseData} loading={expenseLoading} error={expenseError} />
         <Average />

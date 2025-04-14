@@ -1,45 +1,15 @@
-"use client"
-
-import { useEffect, useState } from "react";
 import { FaIndianRupeeSign } from "react-icons/fa6";
-import { useExpense } from "../../../../context/ExpenseContext";
-import { useIncome } from "../../../../context/IncomeContext";
-import { fetchExpenses } from "../../../api/fetchExpense";
-import { fetchIncomes } from "../../../api/fetchIncome";
 
-const Balance = () => {
-    const [balance, setBalance] = useState<number>(0);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const { shouldRefetch: shouldRefetchIncome } = useIncome();
-    const { shouldRefetch: shouldRefetchExpense } = useExpense();
+interface BalanceProps {
+    data: number;
+    loading: boolean;
+    error: Error | null;
+}
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const [incomeData, expenseData] = await Promise.all([
-                    fetchIncomes(),
-                    fetchExpenses()
-                ]);
-
-                const totalIncome = incomeData.reduce((sum, income) => sum + parseFloat(income.amount), 0);
-                const totalExpense = expenseData.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
-
-                setBalance(totalIncome - totalExpense);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'An error occurred');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [shouldRefetchIncome, shouldRefetchExpense]);
+const Balance: React.FC<BalanceProps> = ({data, loading, error}) => {
 
     if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    if (error) return <div>Error: {error.message}</div>;
 
     return (
         <div className="flex flex-col space-y-4 p-6 bg-white shadow-md rounded-lg w-full min-h-[120px] border border-gray-400">
@@ -47,8 +17,8 @@ const Balance = () => {
                 <h1 className="text-md text-black">Balance</h1>
                 <FaIndianRupeeSign className="text-black" size={18} />
             </div>
-            <p className={`text-2xl font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                ₹ {balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            <p className={`text-2xl font-bold ${data >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                ₹ {data.toLocaleString()}
             </p>
         </div>
     )
