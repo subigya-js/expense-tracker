@@ -1,9 +1,8 @@
 "use client"
 
 import { Progress } from '@/components/ui/progress';
-import { useEffect, useState } from 'react';
-import { useExpense } from '../../../../context/ExpenseContext';
-import { fetchExpenses, Expense } from '../../../api/fetchExpense';
+import { useMemo } from 'react';
+import { Expense } from '../../../api/fetchExpense';
 
 interface CategoryBreakdown {
     [category: string]: {
@@ -12,24 +11,12 @@ interface CategoryBreakdown {
     }
 }
 
-const ExpenseBreakdown = () => {
-    const { shouldRefetch } = useExpense();
-    const [categoryBreakdown, setCategoryBreakdown] = useState<CategoryBreakdown>({});
+interface ExpenseBreakdownProps {
+    expenseData: Expense[];
+    loading: boolean;
+}
 
-    useEffect(() => {
-        const loadExpenseData = async () => {
-            try {
-                const data = await fetchExpenses();
-
-                const breakdown = calculateCategoryBreakdown(data);
-                setCategoryBreakdown(breakdown);
-            } catch (err) {
-                console.error(err);
-            }
-        }
-        loadExpenseData();
-    }, [shouldRefetch])
-
+const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ expenseData, loading }) => {
     const calculateCategoryBreakdown = (expenses: Expense[]): CategoryBreakdown => {
         const breakdown: CategoryBreakdown = {};
         const total = expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
@@ -47,6 +34,12 @@ const ExpenseBreakdown = () => {
         });
 
         return breakdown;
+    }
+
+    const categoryBreakdown = useMemo(() => calculateCategoryBreakdown(expenseData), [expenseData]);
+
+    if (loading) {
+        return <div className="flex justify-center items-center h-full">Loading...</div>;
     }
 
     return (

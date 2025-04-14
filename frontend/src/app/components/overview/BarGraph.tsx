@@ -1,11 +1,9 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts';
-import { useExpense } from '../../../../context/ExpenseContext';
-import { useIncome } from '../../../../context/IncomeContext';
-import { fetchIncomes, Income } from '../../../api/fetchIncome';
-import { fetchExpenses, Expense } from '../../../api/fetchExpense';
+import { Income } from '../../../api/fetchIncome';
+import { Expense } from '../../../api/fetchExpense';
 
 interface ChartData {
     month: string;
@@ -13,37 +11,13 @@ interface ChartData {
     expense: number;
 }
 
-const BarGraph = () => {
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [chartData, setChartData] = useState<ChartData[]>([]);
-    const { shouldRefetch: shouldRefetchIncome } = useIncome();
-    const { shouldRefetch: shouldRefetchExpense } = useExpense();
+interface BarGraphProps {
+    incomeData: Income[];
+    expenseData: Expense[];
+    loading: boolean;
+}
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-
-                const [incomeData, expenseData] = await Promise.all([
-                    fetchIncomes(),
-                    fetchExpenses()
-                ]);
-
-                const processedData = processTransactions(incomeData, expenseData);
-                setChartData(processedData);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'An error occurred');
-                console.error(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [shouldRefetchIncome, shouldRefetchExpense]);
-
+const BarGraph: React.FC<BarGraphProps> = ({ incomeData, expenseData, loading }) => {
     const processTransactions = (incomeData: Income[], expenseData: Expense[]): ChartData[] => {
         const monthlyData: { [key: string]: ChartData } = {};
         const months = [
@@ -77,8 +51,9 @@ const BarGraph = () => {
         return months.map(month => monthlyData[month]);
     };
 
+    const chartData = useMemo(() => processTransactions(incomeData, expenseData), [incomeData, expenseData]);
+
     if (loading) return <div className="flex justify-center items-center h-full">Loading...</div>;
-    if (error) return <div className="text-red-500">Error: {error}</div>;
 
     return (
         <div className="w-full border h-[300px] sm:h-[420px] flex flex-col p-4 bg-white rounded-lg shadow">

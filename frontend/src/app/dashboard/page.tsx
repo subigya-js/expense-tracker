@@ -213,7 +213,7 @@ const Dashboard = () => {
             Income and Expense Overview (Yearly - {new Date().getFullYear()}):
           </h2>
           <div className="bg-white rounded-lg p-4 h-[300px]">
-            <BarGraph />
+            <BarGraph incomeData={incomeData} expenseData={expenseData} loading={incomeLoading || expenseLoading} />
           </div>
         </div>
 
@@ -222,7 +222,7 @@ const Dashboard = () => {
             Expense Breakdown (Yearly - {new Date().getFullYear()}):
           </h2>
           <div className="bg-white rounded-lg p-4">
-            <ExpenseBreakdown />
+            <ExpenseBreakdown expenseData={expenseData} loading={expenseLoading} />
           </div>
         </div>
       </div>
