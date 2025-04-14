@@ -3,19 +3,7 @@
 import { Progress } from '@/components/ui/progress';
 import { useEffect, useState } from 'react';
 import { useExpense } from '../../../../context/ExpenseContext';
-
-interface Expense {
-    _id: string;
-    user: string;
-    expended_on: string;
-    category?: string;
-    amount: number;
-    date: string;
-    payment_method: string;
-    note: string;
-    createdAt: string;
-    updatedAt: string;
-}
+import { fetchExpenses, Expense } from '../../../api/fetchExpense';
 
 interface CategoryBreakdown {
     [category: string]: {
@@ -24,28 +12,14 @@ interface CategoryBreakdown {
     }
 }
 
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
-
 const ExpenseBreakdown = () => {
     const { shouldRefetch } = useExpense();
     const [categoryBreakdown, setCategoryBreakdown] = useState<CategoryBreakdown>({});
 
     useEffect(() => {
-        const fetchExpenseData = async () => {
+        const loadExpenseData = async () => {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/expense/`, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status} - ${response.statusText}`);
-                }
-
-                const data: Expense[] = await response.json();
-                console.log("Expense data: ", data);
+                const data = await fetchExpenses();
 
                 const breakdown = calculateCategoryBreakdown(data);
                 setCategoryBreakdown(breakdown);
@@ -53,19 +27,19 @@ const ExpenseBreakdown = () => {
                 console.error(err);
             }
         }
-        fetchExpenseData();
+        loadExpenseData();
     }, [shouldRefetch])
 
     const calculateCategoryBreakdown = (expenses: Expense[]): CategoryBreakdown => {
         const breakdown: CategoryBreakdown = {};
-        const total = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+        const total = expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
 
         expenses.forEach(expense => {
             const category = expense.category || 'Others';
             if (!breakdown[category]) {
                 breakdown[category] = { total: 0, percentage: 0 };
             }
-            breakdown[category].total += expense.amount;
+            breakdown[category].total += parseFloat(expense.amount);
         });
 
         Object.keys(breakdown).forEach(category => {

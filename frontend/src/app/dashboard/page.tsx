@@ -126,6 +126,14 @@ const Dashboard = () => {
     );
   }
 
+  console.log("Balance Data:", balanceLoading);
+  console.log("Income Data:", incomeLoading);
+  console.log("Expense Data:", expenseLoading);
+  console.log("Savings Data:", savingsLoading);
+  console.log("Bar Graph Data:", barGraphLoading);
+  console.log("Expense Breakdown Data:", expenseBreakdownLoading);
+  console.log("All Data Loaded:", isAllDataLoaded);
+
   return (
     <div className="min-h-[90vh] p-4 flex flex-col gap-5">
       <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>

@@ -3,6 +3,7 @@ const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
 export interface Expense {
     amount: string;
     date: string;
+    category?: string;
     // Add other fields as needed
 }
 
