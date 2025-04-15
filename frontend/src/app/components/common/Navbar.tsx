@@ -70,18 +70,20 @@ const Navbar = () => {
                 <Button
                   variant="outline"
                   onClick={openModal}
+                  className="cursor-pointer"
                 >
                   Add Expense
                 </Button>
                 <Button
                   variant="outline"
                   onClick={handleOpenIncomeModal}
+                  className="cursor-pointer"
                 >
                   Add Income
                 </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">
+                    <Button variant="ghost" size="icon" className="cursor-pointer">
                       <FaRegUserCircle size={24} />
                     </Button>
                   </DropdownMenuTrigger>
