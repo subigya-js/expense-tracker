@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
 import { useIncome } from "../../../context/IncomeContext";
 import { useExpense } from "../../../context/ExpenseContext";
 import Loading from "../components/common/Loading";
@@ -15,11 +14,6 @@ import ExpenseBreakdown from "../components/overview/ExpenseBreakdown";
 
 import { Expense as ExpenseType, fetchExpenses } from "@/api/fetchExpense";
 import { Income as IncomeType, fetchIncomes } from "@/api/fetchIncome";
-import { Calendar } from "@/components/ui/calendar";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { DateRange } from "react-day-picker";
 
 interface User {
   id: string;
@@ -47,11 +41,6 @@ const Dashboard = () => {
   const [averageExpense, setAverageExpense] = useState<number>(0);
   const [averageError, setAverageError] = useState<Error | null>(null);
   const [averageLoading, setAverageLoading] = useState(true);
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
-
-  const handleSelect = (range: DateRange | undefined) => {
-    setDateRange(range);
-  };
 
   // const [barGraphLoading, setBarGraphLoading] = useState(true);
   // const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
@@ -216,37 +205,6 @@ const Dashboard = () => {
     <div className="min-h-[90vh] p-4 flex flex-col gap-5">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
-
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" className="cursor-pointer">
-              {dateRange?.from ? (
-                dateRange.to ? (
-                  <>
-                    {format(dateRange.from, "LLL dd, y")} -{" "}
-                    {format(dateRange.to, "LLL dd, y")}
-                  </>
-                ) : (
-                  format(dateRange.from, "LLL dd, y")
-                )
-              ) : (
-                "Pick a date"
-              )}
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:min-w-[450px] flex flex-col gap-4 items-center">
-            <DialogHeader>
-              <DialogTitle>Select a date/range</DialogTitle>
-            </DialogHeader>
-            <Calendar
-              mode="range"
-              selected={dateRange}
-              onSelect={handleSelect}
-              numberOfMonths={2}
-              className="rounded-md border p-4"
-            />
-          </DialogContent>
-        </Dialog>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
