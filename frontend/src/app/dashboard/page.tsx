@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useIncome } from "../../../context/IncomeContext";
+import { DateRange } from "react-day-picker";
 import { useExpense } from "../../../context/ExpenseContext";
+import { useIncome } from "../../../context/IncomeContext";
 import Loading from "../components/common/Loading";
 import Average from "../components/dashboard/Average";
 import Balance from "../components/dashboard/Balance";
@@ -12,8 +13,12 @@ import Income from "../components/dashboard/Income";
 import BarGraph from "../components/overview/BarGraph";
 import ExpenseBreakdown from "../components/overview/ExpenseBreakdown";
 
+import { Calendar } from "@/components/ui/calendar";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 import { Expense as ExpenseType, fetchExpenses } from "@/api/fetchExpense";
 import { Income as IncomeType, fetchIncomes } from "@/api/fetchIncome";
+import { Button } from "@/components/ui/button";
 
 interface User {
   id: string;
@@ -24,6 +29,7 @@ interface User {
 const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
   const [incomeData, setIncomeData] = useState<IncomeType[]>([]);
   const [incomeLoading, setIncomeLoading] = useState(true);
@@ -205,6 +211,35 @@ const Dashboard = () => {
     <div className="min-h-[90vh] p-4 flex flex-col gap-5">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
+
+        <div>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="text-sm cursor-pointer" variant={"default"}>
+                {dateRange?.from ? (
+                  dateRange.to ? (
+                    <>
+                      {dateRange.from.toDateString()} - {dateRange.to.toDateString()}
+                    </>
+                  ) : (
+                    dateRange.from.toDateString()
+                  )
+                ) : (
+                  "Select Date"
+                )}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="w-auto p-4" title="Select Date or Range">
+              <Calendar
+                mode="range"
+                selected={dateRange}
+                onSelect={setDateRange}
+                numberOfMonths={2}
+                className="rounded-md border"
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

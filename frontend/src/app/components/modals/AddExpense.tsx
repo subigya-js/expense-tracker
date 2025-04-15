@@ -67,7 +67,7 @@ const AddExpense = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={closeModal}>
-      <DialogContent>
+      <DialogContent title="Add Expense">
         <DialogHeader>
           <DialogTitle>Add Expense</DialogTitle>
         </DialogHeader>

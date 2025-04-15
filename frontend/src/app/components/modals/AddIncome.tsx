@@ -67,7 +67,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px]" title="Add Income">
                 <DialogHeader>
                     <DialogTitle>Add Income</DialogTitle>
                 </DialogHeader>
