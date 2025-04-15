@@ -42,8 +42,8 @@ const Dashboard = () => {
   const [averageError, setAverageError] = useState<Error | null>(null);
   const [averageLoading, setAverageLoading,] = useState(true);
 
-  const [barGraphLoading, setBarGraphLoading] = useState(true);
-  const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
+  // const [barGraphLoading, setBarGraphLoading] = useState(true);
+  // const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
 
   const { shouldRefetch: shouldRefetchIncome } = useIncome();
   const { shouldRefetch: shouldRefetchExpense } = useExpense();
@@ -155,43 +155,43 @@ const Dashboard = () => {
       setUser(parsedUser);
       setLoading(false);
 
-      fetchAllData(); // Call all API fetches in parallel
+      // fetchAllData(); // Call all API fetches in parallel
     } catch (error) {
       console.error("Error parsing user data:", error);
       router.push("/login");
     }
   }, [router]);
 
-  const fetchAllData = async () => {
-    const results = await Promise.allSettled([
-      fetchBarGraphData(),
-      fetchExpenseBreakdownData()
-    ]);
+  // const fetchAllData = async () => {
+  //   const results = await Promise.allSettled([
+  //     fetchBarGraphData(),
+  //     fetchExpenseBreakdownData()
+  //   ]);
 
-    results.forEach((result, index) => {
-      if (result.status === "rejected") {
-        console.error(`API call ${index + 1} failed:`, result.reason);
-      }
-    });
-  };
+  //   results.forEach((result, index) => {
+  //     if (result.status === "rejected") {
+  //       console.error(`API call ${index + 1} failed:`, result.reason);
+  //     }
+  //   });
+  // };
 
-  const fetchBarGraphData = async () => {
-    setBarGraphLoading(false);
-  };
+  // const fetchBarGraphData = async () => {
+  //   setBarGraphLoading(false);
+  // };
 
-  const fetchExpenseBreakdownData = async () => {
-    setExpenseBreakdownLoading(false);
-  };
+  // const fetchExpenseBreakdownData = async () => {
+  //   setExpenseBreakdownLoading(false);
+  // };
 
-  const isAllDataLoaded =
-    !balanceLoading &&
-    !incomeLoading &&
-    !expenseLoading &&
-    !averageLoading &&
-    !barGraphLoading &&
-    !expenseBreakdownLoading;
+  // const isAllDataLoaded =
+  //   !balanceLoading &&
+  //   !incomeLoading &&
+  //   !expenseLoading &&
+  //   !averageLoading &&
+  //   !barGraphLoading &&
+  //   !expenseBreakdownLoading;
 
-  console.log(isAllDataLoaded)
+  // console.log(isAllDataLoaded)
 
   if (loading || !user || incomeLoading) {
     return (
