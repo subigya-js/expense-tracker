@@ -132,7 +132,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                         ></input>
                     </div>
                     <p>{error && error}</p>
-                    <Button type="submit">{isLoading ? "Adding Income" : "Add Income"}</Button>
+                    <Button type="submit" className="cursor-pointer">{isLoading ? "Adding Income" : "Add Income"}</Button>
                 </form>
             </DialogContent>
         </Dialog>
