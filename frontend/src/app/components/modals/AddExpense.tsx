@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useExpense } from "../../../../context/ExpenseContext";
 import { useModal } from "../../../../context/ModalContext";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader } from "../../../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 
 const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
@@ -17,7 +17,7 @@ const AddExpense = () => {
   const initialExpenseState = {
     expended_on: "",
     category: "",
-    amount: 0,
+    amount: "",
     date: "",
     payment_method: "",
     note: "",
@@ -69,10 +69,9 @@ const AddExpense = () => {
     <Dialog open={isOpen} onOpenChange={closeModal}>
       <DialogContent title="Add Expense">
         <DialogHeader>
-          <DialogTitle>Add Expense</DialogTitle>
         </DialogHeader>
         <form
-          className="w-full max-w-md space-y-4 p-8 bg-white rounded-lg"
+          className="w-full max-w-md space-y-4 bg-white rounded-lg"
           onSubmit={onExpenseSubmit}
         >
           <div>
@@ -106,14 +105,14 @@ const AddExpense = () => {
             </label>
             <Select value={expense.category}
               onValueChange={(value) => setExpense({ ...expense, category: value })}>
-              <SelectTrigger className="mt-1 w-full">
+              <SelectTrigger className="mt-1 w-full cursor-pointer">
                 <SelectValue placeholder="Select expense category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Housing">Housing</SelectItem>
-                <SelectItem value="Shopping">Shopping</SelectItem>
-                <SelectItem value="Entertainment">Entertainment</SelectItem>
-                <SelectItem value="Others">Others</SelectItem>
+                <SelectItem value="Housing" className="cursor-pointer">Housing</SelectItem>
+                <SelectItem value="Shopping" className="cursor-pointer">Shopping</SelectItem>
+                <SelectItem value="Entertainment" className="cursor-pointer">Entertainment</SelectItem>
+                <SelectItem value="Others" className="cursor-pointer">Others</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -134,7 +133,7 @@ const AddExpense = () => {
               placeholder="100"
               value={expense.amount}
               onChange={(e) =>
-                setExpense({ ...expense, amount: parseFloat(e.target.value) || 0 })
+                setExpense({ ...expense, amount: e.target.value })
               }
               min="1"
               step="1"
@@ -154,7 +153,7 @@ const AddExpense = () => {
               id="date"
               name="date"
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
-                       focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                       focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 cursor-pointer"
               placeholder="100"
               value={expense.date}
               onChange={(e) =>
@@ -173,15 +172,15 @@ const AddExpense = () => {
             </label>
             <Select value={expense.payment_method}
               onValueChange={(value) => setExpense({ ...expense, payment_method: value })}>
-              <SelectTrigger className="mt-1 w-full">
+              <SelectTrigger className="mt-1 w-full cursor-pointer">
                 <SelectValue placeholder="Select a payment method" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="cash">Cash</SelectItem>
-                <SelectItem value="credit_card">Credit Card</SelectItem>
-                <SelectItem value="debit_card">Debit Card</SelectItem>
-                <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-                <SelectItem value="paypal">PayPal</SelectItem>
+                <SelectItem value="cash" className="cursor-pointer">Cash</SelectItem>
+                <SelectItem value="credit_card" className="cursor-pointer">Credit Card</SelectItem>
+                <SelectItem value="debit_card" className="cursor-pointer">Debit Card</SelectItem>
+                <SelectItem value="bank_transfer" className="cursor-pointer">Bank Transfer</SelectItem>
+                <SelectItem value="paypal" className="cursor-pointer">PayPal</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -207,7 +206,7 @@ const AddExpense = () => {
             />
           </div>
           <p>{error && error}</p>
-          <Button type="submit">
+          <Button type="submit" className="cursor-pointer">
             {isLoading ? "Adding Expense..." : "Add Expense"}
           </Button>
         </form>
