@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import React, { useState } from 'react';
 import { useIncome } from "../../../../context/IncomeContext";
@@ -67,9 +67,8 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[425px]" title="Add Income">
                 <DialogHeader>
-                    <DialogTitle>Add Income</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
@@ -80,6 +79,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                             type="number"
                             id="amount"
                             value={income.amount}
+                            placeholder="100"
                             onChange={(e) => setIncome({ ...income, amount: e.target.value ? Number(e.target.value) : '' })}
                             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                        focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
@@ -93,14 +93,14 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                             Category <span className="text-red-500">*</span>
                         </label>
                         <Select value={income.category} onValueChange={(value) => setIncome({ ...income, category: value })}>
-                            <SelectTrigger className="w-full">
+                            <SelectTrigger className="w-full cursor-pointer">
                                 <SelectValue placeholder="Select a category" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="Salary">Salary</SelectItem>
-                                <SelectItem value="Freelance">Freelance</SelectItem>
-                                <SelectItem value="Investment">Investment</SelectItem>
-                                <SelectItem value="Other">Other</SelectItem>
+                                <SelectItem value="Salary" className="cursor-pointer">Salary</SelectItem>
+                                <SelectItem value="Freelance" className="cursor-pointer">Freelance</SelectItem>
+                                <SelectItem value="Investment" className="cursor-pointer">Investment</SelectItem>
+                                <SelectItem value="Other" className="cursor-pointer">Other</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -132,7 +132,7 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
                         ></input>
                     </div>
                     <p>{error && error}</p>
-                    <Button type="submit">{isLoading ? "Adding Income" : "Add Income"}</Button>
+                    <Button type="submit" className="cursor-pointer">{isLoading ? "Adding Income" : "Add Income"}</Button>
                 </form>
             </DialogContent>
         </Dialog>
