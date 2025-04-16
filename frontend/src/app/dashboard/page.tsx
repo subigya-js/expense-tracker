@@ -207,6 +207,8 @@ const Dashboard = () => {
     );
   }
 
+  console.log("Date range: ", dateRange)
+
   return (
     <div className="min-h-[90vh] p-4 flex flex-col gap-5">
       <div className="flex justify-between">
