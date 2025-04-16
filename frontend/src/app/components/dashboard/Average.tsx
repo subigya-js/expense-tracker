@@ -20,7 +20,7 @@ const Average: React.FC<AverageProps> = ({income, expense, loading, error}) => {
             </div>
             <div className="flex justify-between">
                 <p className="text-green-600 text-md font-semibold">Income: ₹{Number(income.toFixed(2)).toLocaleString("en-IN")}</p>
-                <p className="text-red-600 text-md font-semibold">Expenses: ₹{Number(expense.toFixed(2)).toLocaleString("en-IN")}</p>
+                <p className="text-red-600 text-md font-semibold">Expense: ₹{Number(expense.toFixed(2)).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
         </div>
     )
