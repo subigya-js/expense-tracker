@@ -91,9 +91,8 @@ const Transactions: React.FC<TransactionsProps> = ({ incomeData, expenseData }) 
                         transactions.map((transaction) => (
                             <div
                                 key={transaction._id}
-                                className={`flex justify-between items-center p-2 rounded ${
-                                    transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
-                                }`}
+                                className={`flex justify-between items-center p-2 rounded ${transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+                                    }`}
                             >
                                 <div>
                                     <p className="font-semibold">
@@ -103,10 +102,9 @@ const Transactions: React.FC<TransactionsProps> = ({ incomeData, expenseData }) 
                                     </p>
                                     <p className="text-sm text-gray-600">{formatDate(transaction.date)}</p>
                                 </div>
-                                <p className={`font-semibold ${
-                                    transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
-                                }`}>
-                                    ₹{transaction.amount.toLocaleString()}
+                                <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                                    }`}>
+                                    ₹{Number(transaction.amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </p>
                             </div>
                         ))

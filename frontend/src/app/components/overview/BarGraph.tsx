@@ -79,10 +79,10 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
         return (
             <div className="bg-white p-2 border border-gray-300 rounded shadow">
                 <p className="font-bold">{label}</p>
-                <p className="text-green-600">Income: ₹{income.toLocaleString()}</p>
-                <p className="text-red-600">Expense: ₹{expense.toLocaleString()}</p>
+                <p className="text-green-600">Income: ₹{Number(income.toFixed(2)).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                <p className="text-red-600">Expense: ₹{Number(expense.toFixed(2)).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                 <p className={`font-semibold ${balance >= 0 ? 'text-blue-600' : 'text-red-600'}`}>
-                    Balance: ₹{balance.toLocaleString()}
+                    Balance: ₹{Number(balance.toFixed(2)).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
             </div>
         );
