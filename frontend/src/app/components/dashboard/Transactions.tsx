@@ -5,13 +5,13 @@ import { useExpense } from '../../../../context/ExpenseContext';
 import { useIncome } from '../../../../context/IncomeContext';
 import Loading from '../common/Loading';
 
-import { Expense, fetchExpenses } from '../../../api/fetchExpense';
-import { fetchIncomes, Income } from '../../../api/fetchIncome';
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { DateRange } from "react-day-picker";
 import * as XLSX from 'xlsx';
+import { Expense, fetchExpenses } from '../../../api/fetchExpense';
+import { fetchIncomes, Income } from '../../../api/fetchIncome';
 
 interface Transaction {
     _id?: string;
@@ -126,70 +126,74 @@ const Transactions: React.FC<TransactionsProps> = ({ incomeData, expenseData }) 
     if (error) return <div className="text-red-500">Error: {error}</div>;
 
     return (
-        <div className="min-h-[90vh] p-4 flex flex-col">
-            <div className="flex flex-col space-y-4 p-6 bg-white shadow-md rounded-lg w-full min-h-[120px] border border-gray-300">
-                <div className="flex justify-between items-center font-semibold">
-                    <h1 className="text-md text-black">Transactions:</h1>
-                    <div className="flex space-x-2">
-                        <Button onClick={exportToExcel} className="text-sm cursor-pointer" variant={"outline"}>
-                            Export to Excel
-                        </Button>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button className="text-sm cursor-pointer" variant={"default"}>
-                                    {dateRange?.from ? (
-                                        dateRange.to ? (
-                                            <>
-                                                {dateRange.from.toDateString()} - {dateRange.to.toDateString()}
-                                            </>
+        <div className="min-h-[90vh] p-2 sm:p-4 grid grid-cols-1 gap-4">
+            <div className="bg-white shadow-md rounded-lg w-full min-h-[120px] border border-gray-300 overflow-hidden">
+                <div className="p-4 sm:p-6 space-y-4">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center font-semibold space-y-2 sm:space-y-0">
+                        <h1 className="text-lg sm:text-xl text-black">Transactions:</h1>
+                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+                            <Button onClick={exportToExcel} className="text-sm cursor-pointer w-full sm:w-auto" variant={"outline"}>
+                                Export to Excel
+                            </Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button className="text-sm cursor-pointer w-full sm:w-auto" variant={"default"}>
+                                        {dateRange?.from ? (
+                                            dateRange.to ? (
+                                                <>
+                                                    {dateRange.from.toDateString()} - {dateRange.to.toDateString()}
+                                                </>
+                                            ) : (
+                                                dateRange.from.toDateString()
+                                            )
                                         ) : (
-                                            dateRange.from.toDateString()
-                                        )
-                                    ) : (
-                                        "Select Date Range"
+                                            "Select Date Range"
+                                        )}
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="w-auto p-4" title="Select Date Range">
+                                    {showRangeNotification && (
+                                        <p className="text-red-500 mt-2">Please select an end date for the range</p>
                                     )}
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent className="w-auto p-4" title="Select Date Range">
-                                {showRangeNotification && (
-                                    <p className="text-red-500 mt-2">Please select an end date for the range</p>
-                                )}
-                                <Calendar
-                                    mode="range"
-                                    selected={dateRange}
-                                    onSelect={handleDateRangeChange}
-                                    numberOfMonths={2}
-                                    className="rounded-md border"
-                                />
-                            </DialogContent>
-                        </Dialog>
+                                    <Calendar
+                                        mode="range"
+                                        selected={dateRange}
+                                        onSelect={handleDateRangeChange}
+                                        numberOfMonths={2}
+                                        className="rounded-md border"
+                                    />
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
-                </div>
-                <div className="flex flex-col space-y-2">
-                    {filteredTransactions.length > 0 ? (
-                        filteredTransactions.map((transaction) => (
-                            <div
-                                key={transaction._id}
-                                className={`flex justify-between items-center p-2 rounded ${transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
+                    <div className="flex flex-col space-y-2 max-h-[60vh] overflow-y-auto">
+                        {filteredTransactions.length > 0 ? (
+                            filteredTransactions.map((transaction) => (
+                                <div
+                                    key={transaction._id}
+                                    className={`flex justify-between items-center p-2 sm:p-3 rounded text-sm sm:text-base ${
+                                        transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'
                                     }`}
-                            >
-                                <div>
-                                    <p className="font-semibold">
-                                        {transaction.type === 'income'
-                                            ? transaction.category
-                                            : transaction.expended_on}
-                                    </p>
-                                    <p className="text-sm text-gray-600">{formatDate(transaction.date)}</p>
-                                </div>
-                                <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
+                                >
+                                    <div className="flex-grow">
+                                        <p className="font-semibold truncate">
+                                            {transaction.type === 'income'
+                                                ? transaction.category
+                                                : transaction.expended_on}
+                                        </p>
+                                        <p className="text-xs sm:text-sm text-gray-600">{formatDate(transaction.date)}</p>
+                                    </div>
+                                    <p className={`font-semibold ml-2 ${
+                                        transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
                                     }`}>
-                                    ₹{Number(transaction.amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                                </p>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No transactions available for the selected date range.</p>
-                    )}
+                                        ₹{Number(transaction.amount).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    </p>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No transactions available for the selected date range.</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

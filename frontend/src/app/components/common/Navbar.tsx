@@ -89,13 +89,6 @@ const Navbar = () => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => router.push("/dashboard")}
-                    >
-                      Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>Settings</DropdownMenuItem>
-                    <DropdownMenuItem
                       onClick={handleLogout}
                       className="cursor-pointer"
                     >
@@ -105,7 +98,7 @@ const Navbar = () => {
                 </DropdownMenu>
               </div>
               <div className="md:hidden">
-                <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                <Button variant="ghost" size="icon" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="cursor-pointer">
                   {mobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
                 </Button>
               </div>
@@ -114,16 +107,16 @@ const Navbar = () => {
         </div>
       </div>
       {isLoggedIn && mobileMenuOpen && (
-        <div className="md:hidden mt-4 space-y-2">
-          <Link href="/dashboard" className="block py-2 px-4 text-gray-600 hover:bg-gray-100">
+        <div className="md:hidden mt-4 flex flex-col gap-4 absolute top-10 right-0 bg-gray-200 shadow-2xl opacity-100 p-4 w-full">
+          <Link href="/dashboard" className="block py-2 px-4 text-gray-600 hover:bg-gray-100" onClick={() => setMobileMenuOpen(false)}>
             Dashboard
           </Link>
-          <Link href="/transactions" className="block py-2 px-4 text-gray-600 hover:bg-gray-100">
+          <Link href="/transactions" className="block py-2 px-4 text-gray-600 hover:bg-gray-100" onClick={() => setMobileMenuOpen(false)}>
             Transactions
           </Link>
           <Button
             variant="outline"
-            className="w-full text-left justify-start"
+            className="w-[40%] text-left justify-start cursor-pointer"
             onClick={() => {
               openModal();
               setMobileMenuOpen(false);
@@ -133,7 +126,7 @@ const Navbar = () => {
           </Button>
           <Button
             variant="outline"
-            className="w-full text-left justify-start"
+            className="w-[40%] text-left justify-start cursor-pointer"
             onClick={() => {
               handleOpenIncomeModal();
               setMobileMenuOpen(false);
@@ -143,27 +136,7 @@ const Navbar = () => {
           </Button>
           <Button
             variant="ghost"
-            className="w-full text-left justify-start"
-            onClick={() => {
-              router.push("/dashboard");
-              setMobileMenuOpen(false);
-            }}
-          >
-            Profile
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full text-left justify-start"
-            onClick={() => {
-              // Handle settings
-              setMobileMenuOpen(false);
-            }}
-          >
-            Settings
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full text-left justify-start"
+            className="w-[40%] text-left justify-start cursor-pointer"
             onClick={() => {
               handleLogout();
               setMobileMenuOpen(false);

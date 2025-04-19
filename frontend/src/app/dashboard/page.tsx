@@ -206,8 +206,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-[90vh] p-4 flex flex-col gap-5">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
+      <div className="flex justify-between sm:flex-row flex-col">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
 
         <div>
           <Dialog>

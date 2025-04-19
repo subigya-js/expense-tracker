@@ -59,7 +59,7 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ expenseData, loadin
     };
 
     return (
-        <div className="space-y-4 border h-[300px] sm:h-[420px] rounded-md py-10 px-6 shadow">
+        <div className="space-y-4 border h-[420px] rounded-md py-10 px-6 shadow">
             {Object.keys(categoryBreakdown).length === 0 ? (
                 <div className="flex justify-center items-center h-full">
                     <p className="text-center text-gray-500">
