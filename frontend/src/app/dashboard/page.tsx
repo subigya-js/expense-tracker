@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { useExpense } from "../../../context/ExpenseContext";
 import { useIncome } from "../../../context/IncomeContext";
@@ -19,6 +19,13 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Expense as ExpenseType, fetchExpenses } from "@/api/fetchExpense";
 import { Income as IncomeType, fetchIncomes } from "@/api/fetchIncome";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface User {
   id: string;
@@ -260,19 +267,17 @@ const Dashboard = () => {
             <h2 className="text-xl font-semibold">
               Income and Expense Overview (Yearly):
             </h2>
-            <div className="flex items-center">
-              <label htmlFor="yearSelect" className="mr-2">Select Year:</label>
-              <select
-                id="yearSelect"
-                value={selectedYear}
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-                className="border rounded p-1"
-              >
+            <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(Number(value))}>
+              <SelectTrigger className="w-[130px] cursor-pointer">
+                <SelectValue placeholder="Select Year" />
+              <h1 className="font-bold text-md">Select Year</h1>
+              </SelectTrigger>
+              <SelectContent>
                 {years.map(year => (
-                  <option key={year} value={year}>{year}</option>
+                  <SelectItem key={year} value={year.toString()} className="cursor-pointer">{year}</SelectItem>
                 ))}
-              </select>
-            </div>
+              </SelectContent>
+            </Select>
           </div>
           <div className="bg-white rounded-lg p-4 h-[300px]">
             <BarGraph incomeData={incomeData} expenseData={expenseData} loading={incomeLoading || expenseLoading} selectedYear={selectedYear} />
