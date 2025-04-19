@@ -5,12 +5,13 @@
 ## Features
 
 - User authentication (register, login, logout)
-- Dashboard with income and expense overview
-- Add, edit, and delete income and expenses
-- Categorize income and expenses
+- Dashboard with income, expense and balance amount overview
+- Add and filter incomes and expenses
+- Categorize expenses
 - Filter and sort transactions
 - Interactive bar graph visualization of monthly income and expenses
-- Real-time balance calculation
+- Real-time income, expense and balance amount calculation
+- Download transactions in Excel format
 
 ## Tech Stack
 
@@ -20,6 +21,8 @@
 - Tailwind CSS for styling
 - shadcn/ui components for UI elements
 - Recharts for data visualization
+- ESLint for code linting
+- Lucide React for icons
 
 ### Backend
 - Node.js
@@ -35,14 +38,21 @@ expense-tracker/
 │   ├── public/
 │   ├── src/
 │   │   ├── app/
-│   │   ├── components/
-│   │   │   ├── common/
+│   │   │   ├── components/
+│   │   │   │   ├── common/
+│   │   │   │   ├── dashboard/
+│   │   │   │   ├── modals/
+│   │   │   │   └── overview/
 │   │   │   ├── dashboard/
-│   │   │   ├── modals/
-│   │   │   └── overview/
+│   │   │   ├── login/
+│   │   │   ├── register/
+│   │   │   └── transactions/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   │   └── ui/
 │   │   ├── context/
 │   │   ├── lib/
-│   │   └── ...
+│   │   └── api/
 │   ├── package.json
 │   └── ...
 ├── backend/
@@ -62,6 +72,7 @@ expense-tracker/
 - Node.js (v18.17.0 or later)
 - npm (v9.6.7 or later)
 - MongoDB (v5.0 or later)
+- Git
 
 ## Getting Started
 
@@ -101,7 +112,7 @@ Replace `your_mongodb_connection_string` with your actual MongoDB connection str
 
 ### Frontend
 
-Create a `.env` file in the `frontend/` directory with the following variables:
+Create a `.env.local` file in the `frontend/` directory with the following variables:
 
 ```
 NEXT_PUBLIC_API_BASE_URL=your_api_base_url
