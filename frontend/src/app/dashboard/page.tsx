@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { DateRange } from "react-day-picker";
 import { useExpense } from "../../../context/ExpenseContext";
 import { useIncome } from "../../../context/IncomeContext";
@@ -47,12 +47,15 @@ const Dashboard = () => {
   const [averageExpense, setAverageExpense] = useState<number>(0);
   const [averageError, setAverageError] = useState<Error | null>(null);
   const [averageLoading, setAverageLoading] = useState(true);
-
-  // const [barGraphLoading, setBarGraphLoading] = useState(true);
-  // const [expenseBreakdownLoading, setExpenseBreakdownLoading] = useState(true);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
   const { shouldRefetch: shouldRefetchIncome } = useIncome();
   const { shouldRefetch: shouldRefetchExpense } = useExpense();
+
+  const years = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    return Array.from({ length: currentYear - 2021 }, (_, i) => currentYear - i);
+  }, []);
 
   const router = useRouter();
 
@@ -253,17 +256,32 @@ const Dashboard = () => {
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
-          <h2 className="text-xl font-semibold mb-4 ml-4">
-            Income and Expense Overview (Yearly - {new Date().getFullYear()}):
-          </h2>
+          <div className="flex justify-between items-center mb-4 ml-4">
+            <h2 className="text-xl font-semibold">
+              Income and Expense Overview (Yearly):
+            </h2>
+            <div className="flex items-center">
+              <label htmlFor="yearSelect" className="mr-2">Select Year:</label>
+              <select
+                id="yearSelect"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                className="border rounded p-1"
+              >
+                {years.map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
+          </div>
           <div className="bg-white rounded-lg p-4 h-[300px]">
-            <BarGraph incomeData={incomeData} expenseData={expenseData} loading={incomeLoading || expenseLoading} />
+            <BarGraph incomeData={incomeData} expenseData={expenseData} loading={incomeLoading || expenseLoading} selectedYear={selectedYear} />
           </div>
         </div>
 
         <div>
           <h2 className="text-xl font-semibold mb-4 ml-4">
-            Expense Breakdown (Yearly - {new Date().getFullYear()}):
+            Expense Breakdown (Yearly):
           </h2>
           <div className="bg-white rounded-lg p-4">
             <ExpenseBreakdown expenseData={expenseData} loading={expenseLoading} />
