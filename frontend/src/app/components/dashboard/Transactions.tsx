@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { DateRange } from "react-day-picker";
+import * as XLSX from 'xlsx';
 
 interface Transaction {
     _id?: string;
@@ -104,6 +105,23 @@ const Transactions: React.FC<TransactionsProps> = ({ incomeData, expenseData }) 
         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     };
 
+    const exportToExcel = () => {
+        const dataToExport = filteredTransactions.map(transaction => ({
+            Type: transaction.type,
+            Category: transaction.type === 'income' ? transaction.category : transaction.expended_on,
+            Amount: Number(transaction.amount),
+            Date: formatDate(transaction.date),
+            Description: transaction.description || ''
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(dataToExport);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Transactions");
+
+        const fileName = `Transactions_${dateRange?.from ? formatDate(dateRange.from.toISOString()) : 'All'}_to_${dateRange?.to ? formatDate(dateRange.to.toISOString()) : 'Now'}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+    };
+
     if (loading) return <div className="flex justify-center items-center min-h-[90vh]"><Loading /></div>;
     if (error) return <div className="text-red-500">Error: {error}</div>;
 
@@ -112,35 +130,40 @@ const Transactions: React.FC<TransactionsProps> = ({ incomeData, expenseData }) 
             <div className="flex flex-col space-y-4 p-6 bg-white shadow-md rounded-lg w-full min-h-[120px] border border-gray-300">
                 <div className="flex justify-between items-center font-semibold">
                     <h1 className="text-md text-black">Transactions:</h1>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button className="text-sm cursor-pointer" variant={"default"}>
-                                {dateRange?.from ? (
-                                    dateRange.to ? (
-                                        <>
-                                            {dateRange.from.toDateString()} - {dateRange.to.toDateString()}
-                                        </>
+                    <div className="flex space-x-2">
+                        <Button onClick={exportToExcel} className="text-sm cursor-pointer" variant={"outline"}>
+                            Export to Excel
+                        </Button>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button className="text-sm cursor-pointer" variant={"default"}>
+                                    {dateRange?.from ? (
+                                        dateRange.to ? (
+                                            <>
+                                                {dateRange.from.toDateString()} - {dateRange.to.toDateString()}
+                                            </>
+                                        ) : (
+                                            dateRange.from.toDateString()
+                                        )
                                     ) : (
-                                        dateRange.from.toDateString()
-                                    )
-                                ) : (
-                                    "Select Date Range"
+                                        "Select Date Range"
+                                    )}
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="w-auto p-4" title="Select Date Range">
+                                {showRangeNotification && (
+                                    <p className="text-red-500 mt-2">Please select an end date for the range</p>
                                 )}
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="w-auto p-4" title="Select Date Range">
-                            {showRangeNotification && (
-                                <p className="text-red-500 mt-2">Please select an end date for the range</p>
-                            )}
-                            <Calendar
-                                mode="range"
-                                selected={dateRange}
-                                onSelect={handleDateRangeChange}
-                                numberOfMonths={2}
-                                className="rounded-md border"
-                            />
-                        </DialogContent>
-                    </Dialog>
+                                <Calendar
+                                    mode="range"
+                                    selected={dateRange}
+                                    onSelect={handleDateRangeChange}
+                                    numberOfMonths={2}
+                                    className="rounded-md border"
+                                />
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </div>
                 <div className="flex flex-col space-y-2">
                     {filteredTransactions.length > 0 ? (
