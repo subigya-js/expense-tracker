@@ -3,7 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../../../context/AuthContext";
 
 interface RegisterData {
   name: string;
@@ -14,6 +16,8 @@ interface RegisterData {
 const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
 
 const Register = () => {
+  const router = useRouter();
+  const { isLoggedIn } = useAuth();
   const [registerData, setRegisterData] = useState<RegisterData>({
     name: "",
     email: "",
@@ -22,6 +26,12 @@ const Register = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push('/dashboard');
+    }
+  }, [isLoggedIn, router]);
 
   const registerSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,8 +50,8 @@ const Register = () => {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Registration successful!");
         setRegisterData({ name: "", email: "", password: "" }); // Reset form
+        router.push('/login'); // Redirect to login page
       } else {
         setError(data.message || "Registration failed");
       }

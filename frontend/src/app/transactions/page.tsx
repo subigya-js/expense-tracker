@@ -1,11 +1,10 @@
 "use client"
 
-import React from 'react'
 import Transactions from '../components/dashboard/Transactions'
 
 const TransactionsPage = () => {
     return (
-        <div className="min-h-[90vh] p-4 flex flex-col">
+        <div className="h-[100vh] p-4 flex flex-col overflow-hidden">
             <Transactions />
         </div>
     )

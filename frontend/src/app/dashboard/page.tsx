@@ -1,5 +1,6 @@
 "use client";
 
+import { Calendar } from "@/components/ui/calendar";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -13,7 +14,6 @@ import Income from "../components/dashboard/Income";
 import BarGraph from "../components/overview/BarGraph";
 import ExpenseBreakdown from "../components/overview/ExpenseBreakdown";
 
-import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import { Expense as ExpenseType, fetchExpenses } from "@/api/fetchExpense";
@@ -37,6 +37,12 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [showRangeNotification, setShowRangeNotification] = useState(false);
+
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    setDateRange(range);
+    setShowRangeNotification(!!range?.from && !range?.to);
+  };
 
   const [incomeData, setIncomeData] = useState<IncomeType[]>([]);
   const [incomeLoading, setIncomeLoading] = useState(true);
@@ -105,7 +111,7 @@ const Dashboard = () => {
     fetchExpenseData()
   }, [shouldRefetchExpense])
 
-  // Balance and Average
+  // Filter and calculate data based on date range
   useEffect(() => {
     const calculateData = async () => {
       setBalanceLoading(true);
@@ -122,23 +128,33 @@ const Dashboard = () => {
           return isNaN(parsed) ? 0 : parsed;
         };
 
-        const totalIncome = incomeData.reduce((sum, income) => sum + parseAmount(income.amount), 0);
-        const totalExpense = expenseData.reduce((sum, expense) => sum + parseAmount(expense.amount), 0);
+        const filterByDateRange = (item: { date: string }) => {
+          const itemDate = new Date(item.date);
+          if (dateRange?.from && dateRange?.to) {
+            return itemDate >= dateRange.from && itemDate <= dateRange.to;
+          } else if (dateRange?.from) {
+            return itemDate >= dateRange.from;
+          }
+          return true; // If no date range is selected, include all items
+        };
+
+        const filteredIncomeData = incomeData.filter(filterByDateRange);
+        const filteredExpenseData = expenseData.filter(filterByDateRange);
+
+        const totalIncome = filteredIncomeData.reduce((sum, income) => sum + parseAmount(income.amount), 0);
+        const totalExpense = filteredExpenseData.reduce((sum, expense) => sum + parseAmount(expense.amount), 0);
 
         // Calculate balance
         const balance = totalIncome - totalExpense;
         setBalanceData(balance);
 
         // Calculate averages
-        const currentYear = new Date().getFullYear();
-        const incomeThisYear = incomeData.filter(item => new Date(item.date).getFullYear() === currentYear);
-        const expensesThisYear = expenseData.filter(item => new Date(item.date).getFullYear() === currentYear);
+        const dayCount = dateRange?.to
+          ? Math.ceil((dateRange.to.getTime() - (dateRange.from?.getTime() || Date.now())) / (1000 * 3600 * 24)) + 1
+          : 30; // Default to 30 days if no end date
 
-        const totalIncomeThisYear = incomeThisYear.reduce((sum, item) => sum + parseAmount(item.amount), 0);
-        const totalExpenseThisYear = expensesThisYear.reduce((sum, item) => sum + parseAmount(item.amount), 0);
-
-        setAverageIncome(totalIncomeThisYear / 12);
-        setAverageExpense(totalExpenseThisYear / 12);
+        setAverageIncome(totalIncome / dayCount);
+        setAverageExpense(totalExpense / dayCount);
 
       } catch (error) {
         setBalanceError(error instanceof Error ? error : new Error('An unknown error occurred'));
@@ -150,7 +166,7 @@ const Dashboard = () => {
     };
 
     calculateData();
-  }, [incomeData, expenseData]);
+  }, [incomeData, expenseData, dateRange]);
 
 
   useEffect(() => {
@@ -178,37 +194,6 @@ const Dashboard = () => {
     }
   }, [router]);
 
-  // const fetchAllData = async () => {
-  //   const results = await Promise.allSettled([
-  //     fetchBarGraphData(),
-  //     fetchExpenseBreakdownData()
-  //   ]);
-
-  //   results.forEach((result, index) => {
-  //     if (result.status === "rejected") {
-  //       console.error(`API call ${index + 1} failed:`, result.reason);
-  //     }
-  //   });
-  // };
-
-  // const fetchBarGraphData = async () => {
-  //   setBarGraphLoading(false);
-  // };
-
-  // const fetchExpenseBreakdownData = async () => {
-  //   setExpenseBreakdownLoading(false);
-  // };
-
-  // const isAllDataLoaded =
-  //   !balanceLoading &&
-  //   !incomeLoading &&
-  //   !expenseLoading &&
-  //   !averageLoading &&
-  //   !barGraphLoading &&
-  //   !expenseBreakdownLoading;
-
-  // console.log(isAllDataLoaded)
-
   if (loading || !user || incomeLoading) {
     return (
       <div className="min-h-[90vh] flex justify-center items-center">
@@ -221,8 +206,8 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-[90vh] p-4 flex flex-col gap-5">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
+      <div className="flex justify-between sm:flex-row flex-col">
+        <h1 className="text-xl sm:text-2xl font-bold mb-4">Welcome, {user.name}!</h1>
 
         <div>
           <Dialog>
@@ -237,15 +222,18 @@ const Dashboard = () => {
                     dateRange.from.toDateString()
                   )
                 ) : (
-                  "Select Date"
+                  "Select Date Range"
                 )}
               </Button>
             </DialogTrigger>
-            <DialogContent className="w-auto p-4" title="Select Date or Range">
+            <DialogContent className="w-auto p-4" title="Select Date Range">
+              {showRangeNotification && (
+                <p className="text-red-500 mt-2">Please select an end date for the range</p>
+              )}
               <Calendar
                 mode="range"
                 selected={dateRange}
-                onSelect={setDateRange}
+                onSelect={handleDateRangeChange}
                 numberOfMonths={2}
                 className="rounded-md border"
               />
@@ -255,10 +243,10 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <Balance data={balanceData} loading={balanceLoading} error={balanceError} />
-        <Income data={incomeData} loading={incomeLoading} error={incomeError} />
-        <Expense data={expenseData} loading={expenseLoading} error={expenseError} />
-        <Average income={averageIncome} expense={averageExpense} loading={averageLoading} error={averageError} />
+        <Balance data={balanceData} loading={balanceLoading} error={balanceError} dateRange={dateRange} />
+        <Income data={incomeData} loading={incomeLoading} error={incomeError} dateRange={dateRange} />
+        <Expense data={expenseData} loading={expenseLoading} error={expenseError} dateRange={dateRange} />
+        <Average income={averageIncome} expense={averageExpense} loading={averageLoading} error={averageError} dateRange={dateRange} />
       </div>
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -268,9 +256,8 @@ const Dashboard = () => {
               Income and Expense Overview (Yearly):
             </h2>
             <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(Number(value))}>
-              <SelectTrigger className="w-[130px] cursor-pointer">
+              <SelectTrigger className="w-[100px] cursor-pointer mr-5">
                 <SelectValue placeholder="Select Year" />
-              <h1 className="font-bold text-md">Select Year</h1>
               </SelectTrigger>
               <SelectContent>
                 {years.map(year => (
@@ -279,17 +266,21 @@ const Dashboard = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="bg-white rounded-lg p-4 h-[300px]">
+          <div className="bg-white rounded-lg p-4 min-h-[300px]">
             <BarGraph incomeData={incomeData} expenseData={expenseData} loading={incomeLoading || expenseLoading} selectedYear={selectedYear} />
           </div>
         </div>
 
-        <div>
+        <div className="mt-1.5">
           <h2 className="text-xl font-semibold mb-4 ml-4">
-            Expense Breakdown (Yearly):
+            Expense Breakdown ({dateRange?.from && dateRange?.to
+              ? `${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}`
+              : dateRange?.from
+              ? dateRange.from.toLocaleDateString()
+              : 'All time'}):
           </h2>
-          <div className="bg-white rounded-lg p-4">
-            <ExpenseBreakdown expenseData={expenseData} loading={expenseLoading} />
+          <div className="bg-white rounded-lg p-4 min-h-[300px]">
+            <ExpenseBreakdown expenseData={expenseData} loading={expenseLoading} dateRange={dateRange} />
           </div>
         </div>
       </div>
