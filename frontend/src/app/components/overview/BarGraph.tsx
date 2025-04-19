@@ -15,17 +15,17 @@ interface BarGraphProps {
     incomeData: Income[];
     expenseData: Expense[];
     loading: boolean;
+    selectedYear: number;
 }
 
-const BarGraph: React.FC<BarGraphProps> = ({ incomeData, expenseData, loading }) => {
-    const processTransactions = (incomeData: Income[], expenseData: Expense[]): ChartData[] => {
+const BarGraph: React.FC<BarGraphProps> = ({ incomeData, expenseData, loading, selectedYear }) => {
+
+    const processTransactions = (incomeData: Income[], expenseData: Expense[], year: number): ChartData[] => {
         const monthlyData: { [key: string]: ChartData } = {};
         const months = [
             'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
         ];
-
-        const currentYear = new Date().getFullYear();
 
         months.forEach((month) => {
             monthlyData[month] = { month, income: 0, expense: 0 };
@@ -33,7 +33,7 @@ const BarGraph: React.FC<BarGraphProps> = ({ incomeData, expenseData, loading })
 
         const processTransaction = (transaction: Income | Expense, isIncome: boolean) => {
             const date = new Date(transaction.date);
-            if (date.getFullYear() !== currentYear) return;
+            if (date.getFullYear() !== year) return;
 
             const month = months[date.getMonth()];
             const amount = parseFloat(transaction.amount);
@@ -51,7 +51,7 @@ const BarGraph: React.FC<BarGraphProps> = ({ incomeData, expenseData, loading })
         return months.map(month => monthlyData[month]);
     };
 
-    const chartData = useMemo(() => processTransactions(incomeData, expenseData), [incomeData, expenseData]);
+    const chartData = useMemo(() => processTransactions(incomeData, expenseData, selectedYear), [incomeData, expenseData, selectedYear]);
 
     if (loading) return <div className="flex justify-center items-center h-full">Loading...</div>;
 
