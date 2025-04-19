@@ -3,6 +3,7 @@
 import { Progress } from '@/components/ui/progress';
 import { useMemo } from 'react';
 import { Expense } from '../../../api/fetchExpense';
+import { DateRange } from 'react-day-picker';
 
 interface CategoryBreakdown {
     [category: string]: {
@@ -14,9 +15,10 @@ interface CategoryBreakdown {
 interface ExpenseBreakdownProps {
     expenseData: Expense[];
     loading: boolean;
+    dateRange: DateRange | undefined;
 }
 
-const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ expenseData, loading }) => {
+const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ expenseData, loading, dateRange }) => {
     const calculateCategoryBreakdown = (expenses: Expense[]): CategoryBreakdown => {
         const breakdown: CategoryBreakdown = {};
         const total = expenses.reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
@@ -36,7 +38,14 @@ const ExpenseBreakdown: React.FC<ExpenseBreakdownProps> = ({ expenseData, loadin
         return breakdown;
     }
 
-    const categoryBreakdown = useMemo(() => calculateCategoryBreakdown(expenseData), [expenseData]);
+    const categoryBreakdown = useMemo(() => {
+        const filteredExpenses = expenseData.filter(expense => {
+            const expenseDate = new Date(expense.date);
+            return (dateRange?.from ? expenseDate >= dateRange.from : true) &&
+                   (dateRange?.to ? expenseDate <= dateRange.to : true);
+        });
+        return calculateCategoryBreakdown(filteredExpenses);
+    }, [expenseData, dateRange]);
 
     if (loading) {
         return <div className="flex justify-center items-center h-full">Loading...</div>;

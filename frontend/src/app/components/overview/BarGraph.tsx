@@ -2,8 +2,8 @@
 
 import React, { useMemo } from 'react';
 import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, TooltipProps, XAxis, YAxis } from 'recharts';
-import { Income } from '../../../api/fetchIncome';
 import { Expense } from '../../../api/fetchExpense';
+import { Income } from '../../../api/fetchIncome';
 
 interface ChartData {
     month: string;

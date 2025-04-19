@@ -1,5 +1,6 @@
 "use client";
 
+import { Calendar } from "@/components/ui/calendar";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -13,7 +14,6 @@ import Income from "../components/dashboard/Income";
 import BarGraph from "../components/overview/BarGraph";
 import ExpenseBreakdown from "../components/overview/ExpenseBreakdown";
 
-import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 import { Expense as ExpenseType, fetchExpenses } from "@/api/fetchExpense";
@@ -105,7 +105,7 @@ const Dashboard = () => {
     fetchExpenseData()
   }, [shouldRefetchExpense])
 
-  // Balance and Average
+  // Filter and calculate data based on date range
   useEffect(() => {
     const calculateData = async () => {
       setBalanceLoading(true);
@@ -122,23 +122,33 @@ const Dashboard = () => {
           return isNaN(parsed) ? 0 : parsed;
         };
 
-        const totalIncome = incomeData.reduce((sum, income) => sum + parseAmount(income.amount), 0);
-        const totalExpense = expenseData.reduce((sum, expense) => sum + parseAmount(expense.amount), 0);
+        const filterByDateRange = (item: { date: string }) => {
+          const itemDate = new Date(item.date);
+          if (dateRange?.from && dateRange?.to) {
+            return itemDate >= dateRange.from && itemDate <= dateRange.to;
+          } else if (dateRange?.from) {
+            return itemDate >= dateRange.from;
+          }
+          return true; // If no date range is selected, include all items
+        };
+
+        const filteredIncomeData = incomeData.filter(filterByDateRange);
+        const filteredExpenseData = expenseData.filter(filterByDateRange);
+
+        const totalIncome = filteredIncomeData.reduce((sum, income) => sum + parseAmount(income.amount), 0);
+        const totalExpense = filteredExpenseData.reduce((sum, expense) => sum + parseAmount(expense.amount), 0);
 
         // Calculate balance
         const balance = totalIncome - totalExpense;
         setBalanceData(balance);
 
         // Calculate averages
-        const currentYear = new Date().getFullYear();
-        const incomeThisYear = incomeData.filter(item => new Date(item.date).getFullYear() === currentYear);
-        const expensesThisYear = expenseData.filter(item => new Date(item.date).getFullYear() === currentYear);
+        const dayCount = dateRange?.to
+          ? Math.ceil((dateRange.to.getTime() - (dateRange.from?.getTime() || Date.now())) / (1000 * 3600 * 24)) + 1
+          : 30; // Default to 30 days if no end date
 
-        const totalIncomeThisYear = incomeThisYear.reduce((sum, item) => sum + parseAmount(item.amount), 0);
-        const totalExpenseThisYear = expensesThisYear.reduce((sum, item) => sum + parseAmount(item.amount), 0);
-
-        setAverageIncome(totalIncomeThisYear / 12);
-        setAverageExpense(totalExpenseThisYear / 12);
+        setAverageIncome(totalIncome / dayCount);
+        setAverageExpense(totalExpense / dayCount);
 
       } catch (error) {
         setBalanceError(error instanceof Error ? error : new Error('An unknown error occurred'));
@@ -150,7 +160,7 @@ const Dashboard = () => {
     };
 
     calculateData();
-  }, [incomeData, expenseData]);
+  }, [incomeData, expenseData, dateRange]);
 
 
   useEffect(() => {
@@ -255,10 +265,10 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <Balance data={balanceData} loading={balanceLoading} error={balanceError} />
-        <Income data={incomeData} loading={incomeLoading} error={incomeError} />
-        <Expense data={expenseData} loading={expenseLoading} error={expenseError} />
-        <Average income={averageIncome} expense={averageExpense} loading={averageLoading} error={averageError} />
+        <Balance data={balanceData} loading={balanceLoading} error={balanceError} dateRange={dateRange} />
+        <Income data={incomeData} loading={incomeLoading} error={incomeError} dateRange={dateRange} />
+        <Expense data={expenseData} loading={expenseLoading} error={expenseError} dateRange={dateRange} />
+        <Average income={averageIncome} expense={averageExpense} loading={averageLoading} error={averageError} dateRange={dateRange} />
       </div>
 
       <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -289,7 +299,7 @@ const Dashboard = () => {
             Expense Breakdown (Yearly):
           </h2>
           <div className="bg-white rounded-lg p-4">
-            <ExpenseBreakdown expenseData={expenseData} loading={expenseLoading} />
+            <ExpenseBreakdown expenseData={expenseData} loading={expenseLoading} dateRange={dateRange} />
           </div>
         </div>
       </div>
