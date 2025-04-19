@@ -16,7 +16,7 @@ const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
 
 const LoginPage = () => {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, isLoggedIn } = useAuth();
   const [loginData, setLoginData] = React.useState<LoginData>({
     email: "",
     password: "",
@@ -24,6 +24,12 @@ const LoginPage = () => {
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (isLoggedIn) {
+      router.push('/dashboard');
+    }
+  }, [isLoggedIn, router]);
 
   const loginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -266,12 +266,12 @@ const Dashboard = () => {
               </SelectContent>
             </Select>
           </div>
-          <div className="bg-white rounded-lg p-4 h-[300px]">
+          <div className="bg-white rounded-lg p-4 min-h-[300px]">
             <BarGraph incomeData={incomeData} expenseData={expenseData} loading={incomeLoading || expenseLoading} selectedYear={selectedYear} />
           </div>
         </div>
 
-        <div>
+        <div className="mt-1.5">
           <h2 className="text-xl font-semibold mb-4 ml-4">
             Expense Breakdown ({dateRange?.from && dateRange?.to
               ? `${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}`
@@ -279,7 +279,7 @@ const Dashboard = () => {
               ? dateRange.from.toLocaleDateString()
               : 'All time'}):
           </h2>
-          <div className="bg-white rounded-lg p-4">
+          <div className="bg-white rounded-lg p-4 min-h-[300px]">
             <ExpenseBreakdown expenseData={expenseData} loading={expenseLoading} dateRange={dateRange} />
           </div>
         </div>
