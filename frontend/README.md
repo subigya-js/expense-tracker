@@ -5,13 +5,13 @@ This is the frontend for the Expense Tracker application, built with Next.js 13+
 ## Features
 
 - User authentication (Register/Login/Logout)
-- Dashboard with income and expense overview
-- Income management (Add, Edit, Delete income)
-- Expense management (Add, Edit, Delete expenses)
+- Dashboard with income, expense, and balance amount overview
+- Add and filter incomes and expenses
+- Categorize expenses
 - Interactive bar graph visualization of monthly income and expenses
-- Real-time balance calculation
+- Real-time income, expense, and balance amount calculation
+- Download transactions in Excel format
 - Responsive design for mobile and desktop
-- Consistent footer across all pages with important links
 
 ## Prerequisites
 
@@ -44,19 +44,21 @@ frontend/
 │   │   │   └── overview/
 │   │   ├── dashboard/
 │   │   ├── login/
-│   │   └── register/
+│   │   ├── register/
+│   │   └── transactions/
 │   ├── assets/
 │   ├── components/
 │   │   └── ui/
 │   ├── context/
-│   └── lib/
+│   ├── lib/
+│   └── api/
 ├── package.json
 └── ...
 ```
 
 ## Environment Variables
 
-Create a `.env` file in the root of the frontend directory with the following variables:
+Create a `.env.local` file in the root of the frontend directory with the following variables:
 
 ```
 NEXT_PUBLIC_API_BASE_URL=your_api_base_url

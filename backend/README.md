@@ -41,16 +41,10 @@ Replace `your_mongodb_connection_string` with your actual MongoDB connection str
 ### Income Management
 - POST `/api/income/`: Add a new income entry
 - GET `/api/income/`: Get all income entries for the current user
-- PUT `/api/income/:id`: Update an income entry
-- DELETE `/api/income/:id`: Delete an income entry
 
 ### Expense Management
 - POST `/api/expense/`: Add a new expense entry
 - GET `/api/expense/`: Get all expense entries for the current user
-- PUT `/api/expense/:id`: Update an expense entry
-- DELETE `/api/expense/:id`: Delete an expense entry
-
-For detailed information about request/response formats, refer to the API documentation (TODO: Add link to API docs when available).
 
 ## Middleware
 
@@ -60,14 +54,15 @@ For detailed information about request/response formats, refer to the API docume
 ## Database Models
 
 - `userModel`: Defines the schema for user data
-- `incomeModal`: Defines the schema for income entries
-- `expenseModal`: Defines the schema for expense entries
+- `incomeModel`: Defines the schema for income entries
+- `expenseModel`: Defines the schema for expense entries
 
 ## Controllers
 
 - `userControllers`: Handles user authentication logic
-- `addIncomeController`: Manages income-related operations
-- `addExpenseController`: Manages expense-related operations
+- `incomeController`: Manages income-related operations
+- `expenseController`: Manages expense-related operations
+- `transactionController`: Handles transaction download functionality
 
 ## Database
 
@@ -83,3 +78,13 @@ Custom error handling is implemented in `middleware/errorHandler.js`. This provi
 - For production: `npm start`
 
 The server will start on the port specified in your `.env` file (defaults to 3001 if not specified).
+
+## Testing
+
+To run the test suite:
+
+```
+npm test
+```
+
+This will execute the test cases defined in the `__tests__` directory.
