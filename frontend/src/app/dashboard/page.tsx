@@ -222,11 +222,11 @@ const Dashboard = () => {
                     dateRange.from.toDateString()
                   )
                 ) : (
-                  "Select Date"
+                  "Select Date Range"
                 )}
               </Button>
             </DialogTrigger>
-            <DialogContent className="w-auto p-4" title="Select Date or Range">
+            <DialogContent className="w-auto p-4" title="Select Date Range">
               {showRangeNotification && (
                 <p className="text-red-500 mt-2">Please select an end date for the range</p>
               )}
@@ -258,7 +258,6 @@ const Dashboard = () => {
             <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(Number(value))}>
               <SelectTrigger className="w-[130px] cursor-pointer">
                 <SelectValue placeholder="Select Year" />
-              <h1 className="font-bold text-md">Select Year</h1>
               </SelectTrigger>
               <SelectContent>
                 {years.map(year => (
