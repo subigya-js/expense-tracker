@@ -37,6 +37,12 @@ const Dashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
+  const [showRangeNotification, setShowRangeNotification] = useState(false);
+
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    setDateRange(range);
+    setShowRangeNotification(!!range?.from && !range?.to);
+  };
 
   const [incomeData, setIncomeData] = useState<IncomeType[]>([]);
   const [incomeLoading, setIncomeLoading] = useState(true);
@@ -188,37 +194,6 @@ const Dashboard = () => {
     }
   }, [router]);
 
-  // const fetchAllData = async () => {
-  //   const results = await Promise.allSettled([
-  //     fetchBarGraphData(),
-  //     fetchExpenseBreakdownData()
-  //   ]);
-
-  //   results.forEach((result, index) => {
-  //     if (result.status === "rejected") {
-  //       console.error(`API call ${index + 1} failed:`, result.reason);
-  //     }
-  //   });
-  // };
-
-  // const fetchBarGraphData = async () => {
-  //   setBarGraphLoading(false);
-  // };
-
-  // const fetchExpenseBreakdownData = async () => {
-  //   setExpenseBreakdownLoading(false);
-  // };
-
-  // const isAllDataLoaded =
-  //   !balanceLoading &&
-  //   !incomeLoading &&
-  //   !expenseLoading &&
-  //   !averageLoading &&
-  //   !barGraphLoading &&
-  //   !expenseBreakdownLoading;
-
-  // console.log(isAllDataLoaded)
-
   if (loading || !user || incomeLoading) {
     return (
       <div className="min-h-[90vh] flex justify-center items-center">
@@ -252,10 +227,13 @@ const Dashboard = () => {
               </Button>
             </DialogTrigger>
             <DialogContent className="w-auto p-4" title="Select Date or Range">
+              {showRangeNotification && (
+                <p className="text-red-500 mt-2">Please select an end date for the range</p>
+              )}
               <Calendar
                 mode="range"
                 selected={dateRange}
-                onSelect={setDateRange}
+                onSelect={handleDateRangeChange}
                 numberOfMonths={2}
                 className="rounded-md border"
               />
@@ -296,7 +274,11 @@ const Dashboard = () => {
 
         <div>
           <h2 className="text-xl font-semibold mb-4 ml-4">
-            Expense Breakdown (Yearly):
+            Expense Breakdown ({dateRange?.from && dateRange?.to
+              ? `${dateRange.from.toLocaleDateString()} - ${dateRange.to.toLocaleDateString()}`
+              : dateRange?.from
+              ? dateRange.from.toLocaleDateString()
+              : 'All time'}):
           </h2>
           <div className="bg-white rounded-lg p-4">
             <ExpenseBreakdown expenseData={expenseData} loading={expenseLoading} dateRange={dateRange} />
