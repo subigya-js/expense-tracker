@@ -256,7 +256,7 @@ const Dashboard = () => {
               Income and Expense Overview (Yearly):
             </h2>
             <Select value={selectedYear.toString()} onValueChange={(value) => setSelectedYear(Number(value))}>
-              <SelectTrigger className="w-[130px] cursor-pointer">
+              <SelectTrigger className="w-[100px] cursor-pointer mr-5">
                 <SelectValue placeholder="Select Year" />
               </SelectTrigger>
               <SelectContent>
