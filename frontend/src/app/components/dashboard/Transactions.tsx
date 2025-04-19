@@ -126,18 +126,18 @@ const Transactions: React.FC<TransactionsProps> = ({ incomeData, expenseData }) 
     if (error) return <div className="text-red-500">Error: {error}</div>;
 
     return (
-        <div className="min-h-[90vh] p-2 sm:p-4 grid grid-cols-1 gap-4">
-            <div className="bg-white shadow-md rounded-lg w-full min-h-[120px] border border-gray-300 overflow-hidden">
-                <div className="p-4 sm:p-6 space-y-4">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center font-semibold space-y-2 sm:space-y-0">
+        <div className="h-[100vh] p-2 sm:p-4 flex flex-col overflow-hidden">
+            <div className="bg-white shadow-md rounded-lg w-full flex-grow border border-gray-300 overflow-hidden flex flex-col">
+                <div className="p-4 sm:p-6 flex flex-col h-full">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center font-semibold space-y-2 sm:space-y-0 mb-4">
                         <h1 className="text-lg sm:text-xl text-black">Transactions:</h1>
-                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
-                            <Button onClick={exportToExcel} className="text-sm cursor-pointer w-full sm:w-auto" variant={"outline"}>
+                        <div className="flex flex-row space-y-2 sm:space-y-0 gap-2 sm:space-x-2 w-full sm:w-auto">
+                            <Button onClick={exportToExcel} className="text-sm cursor-pointer w-[50%] sm:w-auto" variant={"outline"}>
                                 Export to Excel
                             </Button>
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <Button className="text-sm cursor-pointer w-full sm:w-auto" variant={"default"}>
+                                    <Button className="text-sm cursor-pointer w-[50%] sm:w-auto" variant={"default"}>
                                         {dateRange?.from ? (
                                             dateRange.to ? (
                                                 <>
@@ -166,7 +166,7 @@ const Transactions: React.FC<TransactionsProps> = ({ incomeData, expenseData }) 
                             </Dialog>
                         </div>
                     </div>
-                    <div className="flex flex-col space-y-2 max-h-[60vh] overflow-y-auto">
+                    <div className="flex-grow overflow-y-auto space-y-2 pr-4">
                         {filteredTransactions.length > 0 ? (
                             filteredTransactions.map((transaction) => (
                                 <div
