@@ -1,71 +1,38 @@
 "use client";
 
+import { registerAction } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "../../../context/AuthContext";
-
-interface RegisterData {
-  name: string;
-  email: string;
-  password: string;
-}
-
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
+import { useState } from "react";
 
 const Register = () => {
   const router = useRouter();
-  const { isLoggedIn } = useAuth();
-  const [registerData, setRegisterData] = useState<RegisterData>({
-    name: "",
-    email: "",
-    password: "",
-  });
+
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      router.push('/dashboard');
-    }
-  }, [isLoggedIn, router]);
 
   const registerSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(registerData),
-      });
+    const result = await registerAction(name, email, password);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setRegisterData({ name: "", email: "", password: "" }); // Reset form
-        router.push('/login'); // Redirect to login page
-      } else {
-        setError(data.message || "Registration failed");
-      }
-    } catch (error) {
-      console.error(error);
-
-      if (error instanceof Error) {
-        setError(error.message);
-      } else {
-        setError("An unknown error occurred");
-      }
-    } finally {
-      setLoading(false);
+    if (result?.error) {
+      setError(result.error);
+      setLoading(false)
+      return;
     }
+
+    router.push("/login")
   };
 
   return (
@@ -89,10 +56,8 @@ const Register = () => {
             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                      focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
             placeholder="Enter your name"
-            value={registerData.name}
-            onChange={(e) =>
-              setRegisterData({ ...registerData, name: e.target.value })
-            }
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             required
           />
         </div>
@@ -111,10 +76,8 @@ const Register = () => {
             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                      focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
             placeholder="Enter your email"
-            value={registerData.email}
-            onChange={(e) =>
-              setRegisterData({ ...registerData, email: e.target.value })
-            }
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -134,10 +97,8 @@ const Register = () => {
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                        focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 pr-10"
               placeholder="Enter your password"
-              value={registerData.password}
-              onChange={(e) =>
-                setRegisterData({ ...registerData, password: e.target.value })
-              }
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button

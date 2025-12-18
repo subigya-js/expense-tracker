@@ -1,16 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useExpense } from "../../../../context/ExpenseContext";
 import { useModal } from "../../../../context/ModalContext";
 import { Dialog, DialogContent, DialogHeader } from "../../../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
+
 
 const AddExpense = () => {
   const { isOpen, closeModal } = useModal();
-  const { triggerRefetch } = useExpense();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,34 +24,16 @@ const AddExpense = () => {
 
   const onExpenseSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // alert(JSON.stringify(expense, null, 2)); // Pretty-prints JSON
     setIsLoading(true);
     setError(null);
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setError("You need to be logged in to add an expense.");
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      const response = await fetch(`${API_BASE_URL}/api/expense/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(expense)
-      });
+      // Import the server action
+      const { addExpense } = await import("@/actions/expense.actions");
 
-      if (!response.ok) {
-        throw new Error("Failed to add expense.");
-      }
+      await addExpense(expense);
 
-      const data = await response.json();
-      console.log("Expense added:", data);
-      triggerRefetch();
+      console.log("Expense added successfully");
       setExpense(initialExpenseState);
       closeModal();
     }

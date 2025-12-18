@@ -6,61 +6,34 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useAuth } from "../../../context/AuthContext";
-
-interface LoginData {
-  email: string;
-  password: string;
-}
-
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
+import { loginAction } from "@/actions/auth.actions";
 
 const LoginPage = () => {
   const router = useRouter();
-  const { login, isLoggedIn } = useAuth();
-  const [loginData, setLoginData] = React.useState<LoginData>({
-    email: "",
-    password: "",
-  });
+  const { setIsLoggedIn } = useAuth();
+
+  const [email, setEmail] = React.useState<string>("");
+  const [password, setPassword] = React.useState<string>("");
+
   const [error, setError] = React.useState<string | null>(null);
   const [loading, setLoading] = React.useState<boolean>(false);
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    if (isLoggedIn) {
-      router.push('/dashboard');
-    }
-  }, [isLoggedIn, router]);
 
   const loginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
+    const result = await loginAction(email, password);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        login(data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        router.push("/dashboard");
-        setLoginData({ email: "", password: "" });
-      } else {
-        setError(data.message || "Login failed");
-      }
-    } catch (error) {
-      console.error(error);
-      setError("An unknown error occurred");
-    } finally {
+    if (result?.error) {
+      setError(result.error);
       setLoading(false);
+      return
     }
+
+    setIsLoggedIn(true)
+    router.push("/dashboard");
   };
 
   return (
@@ -84,10 +57,8 @@ const LoginPage = () => {
             className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                        focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
             placeholder="Enter your email"
-            value={loginData.email}
-            onChange={(e) =>
-              setLoginData({ ...loginData, email: e.target.value })
-            }
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -106,10 +77,8 @@ const LoginPage = () => {
               className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
                          focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 pr-10"
               placeholder="Enter your password"
-              value={loginData.password}
-              onChange={(e) =>
-                setLoginData({ ...loginData, password: e.target.value })
-              }
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button
