@@ -2,14 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import React, { useState } from 'react';
-import { useIncome } from "../../../../context/IncomeContext";
 
 interface AddIncomeProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-const API_BASE_URL = "https://expense-tracker-pi-beryl.vercel.app";
+
 
 const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
     const initialIncomeState = {
@@ -22,7 +21,6 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const { triggerRefetch } = useIncome();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,30 +28,13 @@ const AddIncome: React.FC<AddIncomeProps> = ({ isOpen, onClose }) => {
         setIsLoading(true);
         setError(null);
 
-        const token = localStorage.getItem("token");
-        if (!token) {
-            setError("You need to be logged in to add an income.");
-            setIsLoading(false);
-            return;
-        }
-
         try {
-            const response = await fetch(`${API_BASE_URL}/api/income/add`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(income)
-            })
+            // Import the server action
+            const { addIncome } = await import("@/actions/income.actions");
 
-            if (!response.ok) {
-                throw new Error("Failed to add income.");
-            }
+            await addIncome(income);
 
-            const data = await response.json();
-            console.log("Income added:", data);
-            triggerRefetch();
+            console.log("Income added successfully");
             setIncome(initialIncomeState);
             onClose();
         }
