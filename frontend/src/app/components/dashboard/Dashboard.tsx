@@ -20,7 +20,19 @@ import Income from "../../components/dashboard/Income";
 import BarGraph from "../../components/overview/BarGraph";
 import ExpenseBreakdown from "../../components/overview/ExpenseBreakdown";
 
-export default function DashboardClient({ incomeData, expenseData }: any) {
+interface Transaction {
+    amount: string;
+    date: string;
+    category?: string;
+    expended_on?: string;
+}
+
+interface DashboardProps {
+    incomeData: Transaction[];
+    expenseData: Transaction[];
+}
+
+export default function DashboardClient({ incomeData, expenseData }: DashboardProps) {
     const [dateRange, setDateRange] = useState<DateRange>();
     const [showRangeNotification, setShowRangeNotification] = useState(false);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -38,11 +50,11 @@ export default function DashboardClient({ incomeData, expenseData }: any) {
             return true;
         };
 
-        const income = incomeData.filter((i: any) => inRange(i.date));
-        const expense = expenseData.filter((e: any) => inRange(e.date));
+        const income = incomeData.filter((i) => inRange(i.date));
+        const expense = expenseData.filter((e) => inRange(e.date));
 
-        const totalIncome = income.reduce((s: number, i: any) => s + Number(i.amount), 0);
-        const totalExpense = expense.reduce((s: number, e: any) => s + Number(e.amount), 0);
+        const totalIncome = income.reduce((s: number, i) => s + Number(i.amount), 0);
+        const totalExpense = expense.reduce((s: number, e) => s + Number(e.amount), 0);
 
         const days =
             dateRange?.from && dateRange?.to

@@ -4,7 +4,14 @@ import { API_BASE_URL } from "@/constants";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
-export async function addIncome(income: any) {
+interface IncomeData {
+    amount: number | string;
+    category: string;
+    date: string;
+    description?: string;
+}
+
+export async function addIncome(income: IncomeData) {
     const token = (await cookies()).get("token")?.value;
 
     if (!token) throw new Error("Unauthorized")
