@@ -78,10 +78,7 @@ export default function DashboardClient({ incomeData, expenseData }: DashboardPr
 
     return (
         <div className="min-h-[90vh] p-4 flex flex-col gap-5">
-            {/* Header */}
             <div className="flex justify-between flex-col sm:flex-row">
-                <h1 className="text-2xl font-bold">Dashboard</h1>
-
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button>
